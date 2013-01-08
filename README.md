@@ -1,7 +1,7 @@
 INFORMATIE
 ==========
 
-Deze repository is gemaakt door:
+This repository is made by:
 
 **Naam**: Olaf van Houten
 **Studentnummer**: 10424598
