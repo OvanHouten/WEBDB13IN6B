@@ -21,7 +21,7 @@ body{
 	margin-top:15px;
 	text-align: center;
 }
-a:link {color:white;}     
-a:visited {color:white;} 
-a:hover {color:white;}  
-a:active {color:white;}
+.menu:link {color:white;}     
+.menu:visited {color:white;} 
+.menu:hover {color:white;}  
+.menu:active {color:white;}
