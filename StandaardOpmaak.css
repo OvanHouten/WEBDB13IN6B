@@ -1,13 +1,13 @@
 body{
 		margin-left: 20%;
 		margin-right: 20%;
-	}
+		font-family:sans-serif;
+}
 .banner{
 	box-sizing:border-box;
 	padding:20px;
 	background-color:#3F48CC;
 	color:white;
-	font-family:sans-serif;;
 	padding-left:5%;
 	font-weight:bold;
 }
@@ -16,12 +16,11 @@ body{
 	background-color:#3F48CC;
 	padding:3px;
 	color:white;
-	font-family:sans-serif;
 	font-weight:bold;
 	margin-top:15px;
 	text-align: center;
 }
-.menu:link {color:white;}     
-.menu:visited {color:white;} 
-.menu:hover {color:white;}  
-.menu:active {color:white;}
+.menu a:link {color:white;text-decoration: none;}     
+.menu a:visited {color:white;text-decoration: none;} 
+.menu a:hover {color:white;text-decoration: none;}  
+.menu a:active {color:white;text-decoration: none;}
