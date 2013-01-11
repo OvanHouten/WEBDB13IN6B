@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <HTML>
 <HEAD>
-	<TITLE>Forum</TITLE>
+	<TITLE>Login</TITLE>
 	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css" />
 	<style>
         .box {
+			text-align: left;
 			background-color:#3F48CC;
 			color:white;
 			font-weight:bold;
-			margin-top:120px;
-			text-align: center;
-			height:150px;
-			display: inline-block;
-			width: 200px;
-			
+			margin:120px auto;
+			width: 50%;
+			padding:7px;
+			overflow: hidden;
         }
+		.box a:link {color:white;text-decoration: none;}     
+		.box a:visited {color:white;text-decoration: none;} 
+		.box a:hover {color:white;text-decoration: none;}  
+		.box a:active {color:white;text-decoration: none;}
     </style>
 </HEAD>
 
@@ -30,8 +33,21 @@
 		<a href = "issues.html"> Bugreport </a> |
 		<a href = "contact.html"> Contact </a> 
 	</div>
-	<div class=box>
-		Login
-	</div>
+	<center><div class=box>
+		Login<center><br>
+		<form method ="post" action="addMember.php">
+			<label for="name">Username:</label><br>
+			<input name="name" /><br>
+			<label for="password">Password:</label><br>
+			<input name="password" type="password"/><br>
+            </center>
+			<div style="float:left;margin-left:7px">
+				<h6><a href="register.html">Register</a></h6>
+			</div>
+			<div align="right"  style="overflow: hidden;margin-right:7px;">
+				<h3><a href="thiswillbephp.html">Login</a></h3>
+			</div>
+      </form>
+	</div></center>
 </BODY>
 </HTML>
