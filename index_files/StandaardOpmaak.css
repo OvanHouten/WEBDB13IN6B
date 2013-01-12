@@ -38,6 +38,10 @@ a:visited {color:white;}
 a:hover {color:white;}
 a:active {color:white;}
 
+.subjects a {
+    color: black;
+}
+
 table {
     border-collapse:collapse;
     width:100%;
