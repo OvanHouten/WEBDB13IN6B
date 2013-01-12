@@ -38,7 +38,7 @@ a:visited {color:white;}
 a:hover {color:white;}
 a:active {color:white;}
 
-.subjects a {
+.topic-table a, .subject-table a {
     color: black;
 }
 
