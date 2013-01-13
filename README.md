@@ -13,3 +13,9 @@ en
 **Naam**: Simon Csoma
 
 **Studentnummer**: 10185291
+
+en
+
+**Naam**: Kasper van Veen
+
+**Studentnummer**: 6139752
