@@ -2,6 +2,22 @@
 <head>
 <title>Issues</title>
 <link rel="stylesheet" type="text/css" href="StandaardOpmaak.css" />
+<style>
+.box {
+	text-align: left;
+	background-color:#3F48CC;
+	color:white;
+	font-weight:bold;
+	margin:35px auto;
+	width: 70%;
+	padding:7px;
+	height:250px;
+}
+	.box a:link {color:white;text-decoration: none;}     
+	.box a:visited {color:white;text-decoration: none;} 
+	.box a:hover {color:white;text-decoration: none;}  
+	.box a:active {color:white;text-decoration: none;}
+</style>
 </head>
 
 <body>
@@ -10,15 +26,27 @@ Issues
 </div>
 <div class="menu">
 <a href = "index.html"> Forum </a> |
-<a href = "profile.html"> User page </a> |
+<a href = "profile.html"> Profile </a> |
 <a href = "login.html"> Login </a> | 
-<a href = "config page.html"> Admin Pannel </a> |
+<a href = "config page.html"> Admin Panel </a> |
 <a href = "issues.html"> Issues </a> |
 <a href = "contact.html"> Contact </a> 
 </div>
 
-<p>
-Bug report
-</p>
+<div class="box">
+<form id="contactform" method="post" action="bugreport.php">
+	<label for="name">Name:</label><br>
+	<input name="name"><br>
+	<label for="email">E-mail:</label><br>
+	<input name="email" type="email"><br>
+	<div class="row">
+    <label for="bugreport">Bug report</label><br>
+    <textarea class="area" id="msg" name="msg" rows="8" cols="30">Type your bug report here, this may include grammar and spelling mistakes</textarea>
+	<div align="right" style="overflow: hidden;margin-right:7px;">
+		<h3><a href="phpsomething.html">Send</a></h3>
+	</div>
+</form>
+</div>
+
 </body>
 </html>
