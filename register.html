@@ -14,14 +14,15 @@
 		}
 		.collum1{
 			float: left;
-			width: 20%;
+			width: 19%;
 			overflow:hidden;
+			padding: 10px;
 		}
 		.collum2{
-			float: left;
-			margin-left:80%;
+			padding: 10px;
+			float: right;
+			width:70%;
 			overflow:hidden;
-			background-color:blue;
 		}
 	
 	</style>
@@ -42,12 +43,23 @@
 	
 	<div class=box>
 		<div class=collum1>
-			test 1 Dit is een veel te lange tekst voor zo een kleine ruite<br>Deze box heeft geen padding maar als deze box groter word wordt de ander box met padding ook groter en daaom lijkt hij kleiner
+			Naam*:<br>
+			<br>
+			
+			Geboorte datum*:<br>
+			<br>
+			All the filds with an astrix (*) are requierd<br>
+			<br>
 		</div>
 		<center>
 		<div class=collum2>
-			sadk ;fjasd;lk fj;lasdfj; lkasdjf;las dkjf;l akdjf; aldskfja ;lsdkfja;sldkfj;alsdkfj
-			test 2 nog een langere tekst
+			<form method ="post" action="addMember.php">
+				<input name="name" /><br>
+				<input name="password" type="password"/><br>
+				</center>
+				
+			</form>
+	  
 		</div>
 		</center>
 	</div>
