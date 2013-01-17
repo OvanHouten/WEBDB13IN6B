@@ -4,13 +4,13 @@
 	<TITLE>Register</TITLE>
 	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css" />
 	<style>
-	
 		.box{
-			margin-top: 25px;
+			margin: 25px 25% 25%;
 			background-color:#3F48CC;
 			color:white;
 			font-weight:bold;
 			overflow:hidden;
+			padding: 15px; 
 		}
 		.collum1{
 			float: left;
@@ -24,7 +24,6 @@
 			width:70%;
 			overflow:hidden;
 		}
-	
 	</style>
 </HEAD>
 
@@ -42,26 +41,25 @@
 	</div>
 	
 	<div class=box>
-		<div class=collum1>
-			Naam*:<br>
-			<br>
-			
-			Geboorte datum*:<br>
-			<br>
-			All the filds with an astrix (*) are requierd<br>
-			<br>
-		</div>
-		<center>
-		<div class=collum2>
-			<form method ="post" action="addMember.php">
+		<form method ="post" action="addMember.php">
+				User Name:<br>
 				<input name="name" /><br>
+				<br>				
+				Password:<br>
 				<input name="password" type="password"/><br>
-				</center>
-				
+				<br>
+				Re-Type Password:<br>
+				<input name="verify password" type="password"/><br>
+				<br>
+				E-mail addres:<br>
+				<input name="email" size="35"/><br>
+				<br>
+				Gender:<br>
+				<input name="gender" type="radio" value="male" />Male<br>
+				<input name="gender" type="radio" value="female" />Female<br>
+				<br>
+				<button type="submit"> Submit </button>
 			</form>
-	  
-		</div>
-		</center>
 	</div>
 </body>
 </html>

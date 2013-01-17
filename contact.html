@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)http://smvv.kompiler.org/kasper/contact.html -->
 <html>
 <head>
 	

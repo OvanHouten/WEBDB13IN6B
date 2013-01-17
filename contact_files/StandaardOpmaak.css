@@ -1,28 +1,26 @@
 body{
-    margin-left: 20%;
-    margin-right: 20%;
-    font: 12px/20px verdana, arial, sans;
+	margin-left: 20%;
+	margin-right: 20%;
+	font-family:sans-serif;
 }
-
-.banner {
-    box-sizing:border-box;
-    padding:20px;
-    background-color:#3f48cc;
-    color:white;
-    font-family:sans-serif;;
-    padding-left:5%;
-    font-weight:bold;
+.banner{
+	box-sizing:border-box;
+	padding:25px;
+	background-color:#3F48CC;
+	color:white;
+	padding-left:5%;
+	font-weight:bold;
+	box-shadow: 5px 5px 5px 5px #888;
 }
-
-.menu {
-    background-color:#3f48cc;
-    box-sizing:border-box;
-    color:white;
-    font-family:sans-serif;
-    font-weight:bold;
-    margin-top:15px;
-    padding: 10px;
-    text-align: center;
+.menu{
+	box-sizing:border-box;
+	background-color:#3F48CC;
+	padding:3px;
+	color:white;
+	font-weight:bold;
+	margin-top:15px;
+	text-align: center;
+	box-shadow: 10px 10px 5px #888;
 }
 
 .menu a {
