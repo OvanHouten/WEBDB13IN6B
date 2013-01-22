@@ -10,6 +10,7 @@ body{
 	color:white;
 	padding-left:5%;
 	font-weight:bold;
+	box-shadow: 5px 5px 5px 5px #888;
 }
 .menu{
 	box-sizing:border-box;
@@ -19,6 +20,7 @@ body{
 	font-weight:bold;
 	margin-top:15px;
 	text-align: center;
+	box-shadow: 10px 10px 5px #888;
 }
 .menu a:link {color:white;text-decoration: none;}     
 .menu a:visited {color:white;text-decoration: none;} 

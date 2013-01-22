@@ -1,7 +1,41 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css" />
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css" />
+	<style>
+	
+		.settingbox{
+			float: rigth;
+			margin-top: 25px;
+			padding: 7px;
+		}
+		.submenu{
+			margin-top: 25px;
+			padding: 7px;
+			width: 20%;
+			float: left;
+			text-align: left;
+			background-color:#3F48CC;
+			color:white;
+			font-weight:bold;
+		}
+		.submenu a:link {color:white;text-decoration: none;}     
+		.submenu a:visited {color:white;text-decoration: none;} 
+		.submenu a:hover {color:white;text-decoration: none;}  
+		.submenu a:active {color:white;text-decoration: none;}
+		
+		iframe{
+			height: auto;
+			width: 70%;
+			border-style: solid;
+			border-color:#3F48CC;
+			float: right;
+			margin-top: 25px;
+			padding: 7px;
+			overflow: visible;
+		}
+	
+	</style>
 </head>
 <body>
 <div class="banner">
@@ -15,6 +49,21 @@ Control panel
 <a href = "issues.html"> Issues </a> |
 <a href = "contact.html"> Contact </a> 
 </div>
+
+<div>
+	<div class="submenu">
+		<h3>Submenu</h3><br>
+		<a href="Config/General.html" target ="iframe">General</a><br>
+		<a href="index.html" target ="iframe">Accounts</a><br>
+		<a href="index.html" target ="iframe">Ranks</a><br>
+		<a href="index.html" target ="iframe">Forums</a><br>
+		<a href="index.html" target ="iframe">Moderators</a>
+	</div>
+	<div>
+		<iframe src="issues.html" name="iframe"></iframe>
+	</div>
+</div>
+
 
 </body>
 </html>

@@ -1,3 +1,14 @@
+<?php
+$con = mysql_connect("localhost","webdb13IN6B","stafrana");
+if (!$con)
+  {
+  die('Could not connect: ' . mysql_error());
+  $conStatus = "no connection";
+  }
+else{
+  $conStatus = "connection established";
+  }
+?>
 <!DOCTYPE html>
 <HTML>
 <HEAD>
@@ -41,13 +52,13 @@
 			<input name="name" /><br>
 			<label for="password">Password:</label><br>
 			<input name="password" type="password"/><br>
-			<?php echo "It works!"; ?>
+			<?php echo $conStatus; ?>
             </center>
 			<div style="float:left;margin-left:7px">
 				<h6><a href="register.html">Register</a></h6>
 			</div>
 			<div align="right"  style="overflow: hidden;margin-right:7px;">
-				<h3><a href="thiswillbephp.html">Login</a></h3>
+				<h3><a href="test.php">Login</a></h3>
 			</div>
       </form>
 	</div></center>
