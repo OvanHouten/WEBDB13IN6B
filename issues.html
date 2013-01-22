@@ -11,7 +11,7 @@
 	margin:35px auto;
 	width: 70%;
 	padding:7px;
-	height:250px;
+	height:300px;
 }
 	.box a:link {color:white;text-decoration: none;}     
 	.box a:visited {color:white;text-decoration: none;} 
@@ -34,18 +34,18 @@ Issues
 </div>
 
 <div class="box">
-<form id="contactform" method="post" action="bugreport.php">
+<form action="Bugreport.php" method="post" >
 	<label for="name">Name:</label><br>
-	<input name="name"><br>
+	<input type="text" name="name"><br><br>
 	<label for="email">E-mail:</label><br>
-	<input name="email" type="email"><br>
+	<input name="email" type="email"><br><br>
 	<div class="row">
-    <label for="bugreport">Bug report</label><br>
-    <textarea class="area" id="msg" name="msg" rows="8" cols="30">Type your bug report here, this may include grammar and spelling mistakes</textarea>
+	<label for="Bugreport">Bug report</label><br>
+	<textarea class="area" name="Bugreport" rows="8" cols="30">Type your bug report here, this may also include grammar and spelling mistakes.</textarea>
 	<div align="right" style="overflow: hidden;margin-right:7px;">
-		<h3><a href="phpsomething.html">Send</a></h3>
+		<h3><a href="Bugreport.php">Send</a></h3>
 	</div>
-</form>
+	</form>
 </div>
 
 </body>
