@@ -1,13 +1,11 @@
 <?php
-$con = mysql_connect("localhost","webdb13IN6B","stafrana");
-if (!$con)
-  {
-  die('Could not connect: ' . mysql_error());
-  $conStatus = "no connection";
-  }
-else{
-  $conStatus = "connection established";
-  }
+session_start();
+if(!isset($_SESSION['User_ID'])){
+	$user = 'Guest';
+	$login = 'Log in';
+} else {
+	$login = 'Log out';
+}
 ?>
 <!DOCTYPE html>
 <HTML>
@@ -35,32 +33,53 @@ else{
 
 <BODY>
 	<div class="banner">
-		Login Page
+		<div style="float:left;margin-left:7px">
+			Login
+		</div>
+		<div align="right"  style="overflow: hidden;margin-right:7px;">
+			<?php
+				echo "Welcome ".$user;
+			?>
+		</div>
 	</div>
+	
 	<div class="menu">
-		<a href = "index.html"> Forum </a> |
-		<a href = "profile.html"> Profile </a> |
-		<a href = "login.html"> Login </a> | 
-		<a href = "config page.html"> Admin Panel </a> |
+		<a href = "index.php"> Forum </a> |
+		<a href = "profile.php"> Profile </a> |
+		<a href = "login.php"> <?php echo $login; ?></a>   | 
+		<a href = "config page.php"> Admin Panel </a> |
 		<a href = "issues.html"> Issues </a> |
-		<a href = "contact.html"> Contact </a> 
+		<a href = "contact.php"> Contact </a> 
 	</div>
-	<center><div class=box>
+	<center>
+	<?php if($user === "Guest"){ ?>
+	<div class=box>
 		Login<center><br>
-		<form method ="post" action="addMember.php">
+		<?php
+			if(isset($_SESSION['Error'])){
+				echo $_SESSION['Error'];
+				unset( $_SESSION['Error']);
+			}
+		?>
+		<form method ="post" action="loginscript.php">
 			<label for="name">Username:</label><br>
 			<input name="name" /><br>
 			<label for="password">Password:</label><br>
 			<input name="password" type="password"/><br>
-			<?php echo $conStatus; ?>
+			<button type="submit"> Submit </button>
             </center>
 			<div style="float:left;margin-left:7px">
-				<h6><a href="register.html">Register</a></h6>
+				<h6><a href="register.php">Register</a></h6>
 			</div>
 			<div align="right"  style="overflow: hidden;margin-right:7px;">
-				<h3><a href="test.php">Login</a></h3>
 			</div>
       </form>
-	</div></center>
+	</div>
+	<?php } else {?>
+	<div class=box>
+		<a href = "index.php"> Forum </a> 
+	</div>
+	<?php } ?>
+	</center>
 </BODY>
 </HTML>
