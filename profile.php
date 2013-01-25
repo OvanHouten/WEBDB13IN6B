@@ -35,7 +35,6 @@ $posts = $row2['COUNT(User_ID)']
 	<style type="text/css">
 		.profilebar{
 			background-color:#3F48CC;
-			margin-top:35px;
 			height:300px;
 			width:20%;
 			float:left;
@@ -90,40 +89,41 @@ $posts = $row2['COUNT(User_ID)']
 	<a href = "issues.php"> Issues </a> |
 	<a href = "contact.php"> Contact </a> 
 	</div>
+	
+	<div style="box-shadow: 0px 5px 20px #888888;">
+		<div class="profilebar">
+			<center><?php echo $username ?><br><br>
+			<img src="steve.jpg" width="40px" height="40px"><br>
+			<p style="font-size:10pt;">
+				Level 1<br>
+				Posts: <?php echo $posts ?><br>
+				Joined:<br>
+				<?php echo (date("d-m-Y h:m", strtotime($since))); ?>
+			</p></center>
+		</div>
 
-	<div class="profilebar">
-		<center><?php echo $username ?><br><br>
-		<img src="steve.jpg" width="40px" height="40px"><br>
-		<p style="font-size:10pt;">
-			Level 1<br>
-			Posts: <?php echo $posts ?><br>
-			Joined:<br>
-			<?php echo (date("d-m-Y h:m", strtotime($since))); ?>
-		</p></center>
+		<div class="upperbar">
+		</div>
+
+		<!--Let op, als de lijst langer word, moeten de hoogtes worden aangepast!!!-->
+		<div class="column">
+			<b>Surname:</b><br>
+			<b>Lastname:</b><br>
+			<b>In-game name:</b><br>
+			<b>Bought Minecraft:</b>
+		</div>
+	
+		<div class="column">
+			<?php echo $fname ?> <br>
+			<?php echo $lname ?> <br>
+			<?php echo $username ?> <br>
+			Yes <br>
+		</div>
+	
+		<div class="infobox">
+			<b>Info about me: </b><br>
+			<?php echo $aboutme?>
+		</div>
 	</div>
-
-	<div class="upperbar">
-	</div>
-
-	<!--Let op, als de lijst langer word, moeten de hoogtes worden aangepast!!!-->
-	<div class="column">
-		<b>Surname:</b><br>
-		<b>Lastname:</b><br>
-		<b>In-game name:</b><br>
-		<b>Bought Minecraft:</b>
-	</div>
-
-	<div class="column">
-		<?php echo $fname ?> <br>
-		<?php echo $lname ?> <br>
-		<?php echo $username ?> <br>
-		Yes <br>
-	</div>
-
-	<div class="infobox">
-		<b>Info about me: </b><br>
-		<?php echo $aboutme?>
-	</div>
-
 </body>
 </html>
