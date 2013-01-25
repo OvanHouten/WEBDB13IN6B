@@ -5,6 +5,7 @@ if(!isset($_SESSION['User_ID'])){
 	$login = 'Log in';
 } else {
 	$login = 'Log out';
+	$user = $_SESSION['User'];
 }
 ?>
 <!DOCTYPE html>
@@ -22,7 +23,7 @@ if(!isset($_SESSION['User_ID'])){
 			width: 50%;
 			padding:7px;
 			overflow: hidden;
-			box-shadow: 10px 10px 5px #888;
+			box-shadow: 0px 5px 20px #888888;
         }
 		.box a:link {color:white;text-decoration: none;}     
 		.box a:visited {color:white;text-decoration: none;} 
@@ -43,14 +44,15 @@ if(!isset($_SESSION['User_ID'])){
 		</div>
 	</div>
 	
-	<div class="menu">
-		<a href = "index.php"> Forum </a> |
-		<a href = "profile.php"> Profile </a> |
-		<a href = "login.php"> <?php echo $login; ?></a>   | 
-		<a href = "config page.php"> Admin Panel </a> |
-		<a href = "issues.php"> Issues </a> |
-		<a href = "contact.php"> Contact </a> 
-	</div>
+<div class="menu">
+	<a href = "index.php"> Forum </a> |
+	<a href = "profile.php"> Profile </a> |
+	<a href = "login.php"> <?php echo $login; ?> </a> | 
+	<a href = "config_page.php"> Admin Panel </a> |
+	<a href = "issues.php"> Issues </a> |
+	<a href = "contact.php"> Contact </a>
+</div>
+
 	<center>
 	<?php if($user === "Guest"){ ?>
 	<div class=box>
@@ -77,7 +79,7 @@ if(!isset($_SESSION['User_ID'])){
 	</div>
 	<?php } else {?>
 	<div class=box>
-		<a href = "index.php"> Forum </a> 
+		<center><a href = "logout.php"> Log out </a> </center>
 	</div>
 	<?php } ?>
 	</center>

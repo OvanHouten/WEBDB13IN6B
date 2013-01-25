@@ -1,3 +1,13 @@
+<?php
+session_start();
+if(!isset($_SESSION['User_ID'])){
+	$user = 'Guest';
+	$login = 'Log in';
+} else {
+	$login = 'Log out';
+	$user = $_SESSION['User'];
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,16 +18,26 @@
 
 <body>
 
-<h1 class="banner">Topics of subject "Hoi"</h1>
+	<div class="banner">
+		<div style="float:left;margin-left:7px">
+			Subject
+		</div>
+		<div align="right"  style="overflow: hidden;margin-right:7px;">
+			<?php
+				echo "Welcome ".$user;
+			?>
+		</div>
+	</div>
 
 <div class="menu">
-	<a href="index.html">Forum</a> |
-	<a href="profile.html">User page</a> |
-	<a href="login.html">Login</a> | 
-	<a href="config page.html">Admin Panel</a> |
-	<a href="bugreport.html">Issues</a> |
-	<a href="contact.html">Contact</a>
+	<a href = "index.php"> Forum </a> |
+	<a href = "profile.php"> Profile </a> |
+	<a href = "login.php"> <?php echo $login; ?> </a> | 
+	<a href = "config_page.php"> Admin Panel </a> |
+	<a href = "issues.php"> Issues </a> |
+	<a href = "contact.php"> Contact </a>
 </div>
+
 
 <table class="topic-table">
 <tbody>
