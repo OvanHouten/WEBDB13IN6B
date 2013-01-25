@@ -1,3 +1,13 @@
+<?php
+session_start();
+if(!isset($_SESSION['User_ID'])){
+	$user = 'Guest';
+	$login = 'Log in';
+} else {
+	$login = 'Log out';
+	$user = $_SESSION['User'];
+}
+?>
 <html>
 <head>
 	<title>Issues</title>
@@ -30,17 +40,24 @@
 </head>
 
 <body>
-	<div class="banner">
-		Issues
+		<div class="banner">
+		<div style="float:left;margin-left:7px">
+			Issues
+		</div>
+		<div align="right"  style="overflow: hidden;margin-right:7px;">
+			<?php
+				echo "Welcome ".$user;
+			?>
+		</div>
 	</div>
 	<div class="menu">
-		<a href = "index.php"> Forum </a> |
-		<a href = "profile.php"> Profile </a> |
-		<a href = "login.php"> Login </a> | 
-		<a href = "config page.php"> Admin Panel </a> |
-		<a href = "issues.php"> Issues </a> |
-		<a href = "contact.php"> Contact </a> 
-	</div>
+	<a href = "index.php"> Forum </a> |
+	<a href = "profile.php"> Profile </a> |
+	<a href = "login.php"> <?php echo $login; ?> </a> | 
+	<a href = "config_page.php"> Admin Panel </a> |
+	<a href = "issues.php"> Issues </a> |
+	<a href = "contact.php"> Contact </a>
+</div>
 
 	<div class="box">
 	<form action="Bugreport.php" method="post" >

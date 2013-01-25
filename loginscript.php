@@ -12,6 +12,7 @@ $password = $row['Password'];
 echo $row['Password']. ' ' . $password . ' ' . $_POST['password'];
 if($password === $_POST['password']){
 	$_SESSION['User_ID'] = $row['ID'];
+	$_SESSION['User'] = $row['Name'];
 	header( 'Location: profile.php');
 } else {
 	$_SESSION['Error'] = "Wrong password or user name";

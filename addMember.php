@@ -11,9 +11,9 @@ if(!filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL )){
 	header( 'Location: register.php' );
 	exit;
 }
-list($username,$domain)=split('@',$email);
-if(!checkdnsrr($domain,'MX')) {
-	$_SESSION['Error'] = "Invailid emaild";
+list($username,$domain)=split('@',$_POST['email']);
+if(!checkdnsrr($domain)) {
+	$_SESSION['Error'] = "Invailid email 2";
 	header( 'Location: register.php');
 	exit;
 }
@@ -22,6 +22,28 @@ $dbusername='webdb13IN6B';
 $dbpassword='stafrana';
 $db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
 
+$profile=$db->prepare('SELECT 1 FROM User WHERE Name = :Name');
+$profile->bindValue(':Name',$_POST['name']);
+$profile->execute();
+$row = $profile->fetch();
+
+if($row > 0){
+	$_SESSION['Error'] = "Username already exists";
+	header( 'Location: register.php' );
+	exit;
+}
+
+$profile=$db->prepare('SELECT 1 FROM User WHERE Email = :Email');
+$profile->bindValue(':Email',$_POST['email']);
+$profile->execute();
+$row = $profile->fetch();
+
+if($row > 0){
+	$_SESSION['Error'] = "Email already exists";
+	header( 'Location: register.php' );
+	exit;
+}
+	
 $profile=$db->prepare('INSERT INTO User (Name, Password, Email)
     VALUES (?,?,?)');
 $profile->bindValue(1, $_POST['name']);
