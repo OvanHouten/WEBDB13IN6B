@@ -1,9 +1,12 @@
 <?php
-include_once('db.php');
-
-$forum_results = mysql_query('SELECT * FROM Forums') or die(mysql_error());
-
 $page_title = "Forum index";
+$dbusername='webdb13IN6B';
+$dbpassword='stafrana';
+$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
+
+$profile=$dbuser->prepare('SELECT * FROM Forums ');
+$profile->execute();
+$forum = $profile->fetch();
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,7 +30,7 @@ $page_title = "Forum index";
 </div>
 
 <?php
-while ($forum = mysql_fetch_array($forum_results)) {
+while ($forum = /*mysql_fetch_array($forum_results)*/) {
 ?>
 <table class="subject-table">
 <tbody>
