@@ -21,12 +21,12 @@ $forum = $profile->fetch();
 <h1 class="banner"><?php echo $page_title; ?></h1>
 
 <div class="menu">
-	<a href = "index.html"> Forum </a> |
-	<a href = "profile.html"> Profile </a> |
-	<a href = "login.html"> Login </a> | 
-	<a href = "config page.html"> Admin Panel </a> |
-	<a href = "bugreport.html"> Issues </a> |
-	<a href = "contact.html"> Contact </a>
+	<a href = "index.php"> Forum </a> |
+	<a href = "profile.php"> Profile </a> |
+	<a href = "login.php"> Login </a> | 
+	<a href = "config page.php"> Admin Panel </a> |
+	<a href = "bugreport.php"> Issues </a> |
+	<a href = "contact.php"> Contact </a>
 </div>
 
 <?php
