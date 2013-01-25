@@ -7,13 +7,13 @@ if($_POST['password'] != $_POST['verify_password']){
 	exit;
 } //preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])?*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $_POST['email'])
 if(!filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL )){
-	$_SESSION['Error'] = "Invailid email _ 1";
+	$_SESSION['Error'] = "Invailid email";
 	header( 'Location: register.php' );
 	exit;
 }
 list($username,$domain)=split('@',$email);
 if(!checkdnsrr($domain,'MX')) {
-	$_SESSION['Error'] = "Invailid emaild _ 2";
+	$_SESSION['Error'] = "Invailid emaild";
 	header( 'Location: register.php');
 	exit;
 }
