@@ -22,6 +22,8 @@ if(!isset($_SESSION['User_ID'])){
 			width: 70%;
 			padding:7px;
 			height:300px;
+			box-shadow: 0px 5px 20px #888888;
+
 		}
 		
 		.box a:link {color:white;text-decoration: none;}     

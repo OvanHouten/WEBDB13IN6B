@@ -15,8 +15,11 @@ $dbusername='webdb13IN6B';
 $dbpassword='stafrana';
 $db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
 
+//hier moet nog wat gebeuren met het linken van de threads via sessies(denk ik).
+$thread_ID = 1;
+
 $thread=$db->prepare('SELECT * FROM Threads WHERE ID = :ID');
-$thread->bindValue(':ID', 1);
+$thread->bindValue(':ID', $thread_ID);
 $thread->execute();
 $row = $thread->fetch();
 $titel = $row['Title'];
@@ -24,17 +27,32 @@ $UserID = $row['User_ID'];
 $since = $row['Time'];
 $post = $row['Message'];
 $threadID = $row['ID'];
+
+$posterinfo = $db->prepare('SELECT * FROM User WHERE ID = :ID');
+$posterinfo->bindValue(':ID', $UserID);
+$posterinfo->execute();
+$row = $posterinfo->fetch();
+$username=$row['Name'];
+$usersince=$row['Since'];
+
+$replynmr = $db->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
+								User_ID=:ID');
+$replynmr->bindValue(':ID', $UserID);
+$replynmr->execute();
+$row = $replynmr->fetch();
+$posts = $row['COUNT(User_ID)'];
 ?>
 
 <html>
 <head>
-	<title><?php $titel ?></title>
+	<title><?php echo $titel ?></title>
 	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css" />
 
 	<style type="text/css">
 	.template{
 		height:205px;
 		margin-top:10px;
+		box-shadow: 0px 5px 20px #888888;
 	}
 	.profilebar{
 		background-color:#3F48CC;
@@ -122,16 +140,16 @@ $threadID = $row['ID'];
 		<a href="thread.php">Dit is mijn draad yeah!</a>
 	</div>
 
-	<!-- -->
+	<!-- FIRST POST THREADSTARTER -->
 	<div class="template">
 		<div class="profilebar">
-			<center><?php echo $threadposter ?><br><br>
+			<center><?php echo $username ?><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
 				Level 1<br>
-				Posts: <?php $threadposterposts ?> <br>
+				Posts: <?php echo $posts ?> <br>
 				Joined:<br>
-				99 Dec 9999
+				<?php echo (date("d M Y H:i", strtotime($usersince))); ?>
 			</p></center>
 		</div>
 
@@ -140,69 +158,67 @@ $threadID = $row['ID'];
 		</div>
 
 		<div class="post">
-			<?php echo $message ?>
+			<?php echo $post ?>
 		</div>
 
 		<div class="timeofpost" align="right">
-			<?php echo (date("d M Y H:i", strtotime($threadsince))); ?>
+			<?php echo date("d M Y H:i", strtotime($since)); ?>
 		</div>
 	</div>
 
-	<!--topicpost/question(Post 0)-->
-<!--
+	<!-- PostLoading Algorithm -->
+	<?php
+	$thread=$db->prepare('SELECT * FROM Replys WHERE Thread_ID = :ID');
+	$thread->bindValue(':ID', $thread_ID);
+	$thread->execute();
+	$arrayrows = $thread->fetchAll();
+
+	foreach ($arrayrows as $row) {
+		$nmrpost = $row['Post_number'];
+		$timepost = $row['Time'];
+		$post = $row['Text'];
+		$UserID = $row['User_ID'];
+		
+		$userinfo=$db->prepare('SELECT * FROM User WHERE ID = :ID');
+		$userinfo->bindValue(':ID', $UserID);
+		$userinfo->execute();
+		$row = $userinfo->fetch();
+		
+		$userpost = $row['Name'];
+		$timejoined = $row['Since'];
+		
+		$replynmr = $db->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
+								User_ID=:ID');
+		$replynmr->bindValue(':ID', $UserID);
+		$replynmr->execute();
+		$row2 = $replynmr->fetch();
+		$posts = $row2['COUNT(User_ID)']
+	?>
 	<div class="template">
 		<div class="profilebar">
-			<center>Steve<br><br>
+			<center><?php echo $userpost ?><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
-				Level 99<br>
-				Posts: 9999<br>
+				Level 1<br>
+				Posts: <?php echo $posts ?><br>
 				Joined:<br>
-				99 Dec 9999
-			</p></center>
-		</div>
-
-		<div class="upperbar">
-			Dit is mijn draad yeah!
-		</div>
-
-		<div class="post">
-			Hier komt een mooie vraag/opmerking of iets anders waar de draad (thread) mee begint maar wat gebeurt er nu als de tekst lang wordt zonder te enteren, niet de piratenmanier dus... dat was een lame joke...
-		</div>
-
-		<div class="timeofpost" align="right">
-			13:34 13 jan 2013
-		</div>
-	</div>
--->
-
-	<!--antwoord/reply(post 1)-->
-<!--
-	<div class="template">
-		<div class="profilebar">
-			<center>Steve<br><br>
-			<img src="steve.jpg" width="40px" height="40px"><br>
-			<p style="font-size:10pt;">
-				Level 99<br>
-				Posts: 9999<br>
-				Joined:<br>
-				99 Dec 9999
+				<?php echo date("d M Y H:i", strtotime($timejoined)) ?>
 			</p></center>
 		</div>
 
 		<div class="upperbar" align="right">
-			<a href="Reply.php">Reply</a> #1
+		#<?php echo $nmrpost ?>
 		</div>
 
 		<div class="post">
-			Waarom reageert niemand op mijn post!
+			<?php echo $post ?>
 		</div>
 
 		<div class="timeofpost" align="right">
-			13:35 13 jan 2013
+			<?php echo date("d M Y H:i", strtotime($timepost)) ?>
 		</div>
 	</div>
--->
+	<?php } ?>
 
 	<!-- New post textarea -->
 	<?php
