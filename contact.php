@@ -1,12 +1,5 @@
 <?php
-session_start();
-if(!isset($_SESSION['User_ID'])){
-	$user = 'Guest';
-	$login = 'Log in';
-} else {
-	$login = 'Log out';
-	$user = $_SESSION['User'];
-}
+include_once('menu.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -14,7 +7,8 @@ if(!isset($_SESSION['User_ID'])){
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Contact</title>
-    <link rel="stylesheet" type="text/css" href="./contact_files/StandaardOpmaak.css">
+    <link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
+    <link rel="stylesheet" type="text/css" href="contact.css">
 </head>
 
 <body>
@@ -28,32 +22,24 @@ if(!isset($_SESSION['User_ID'])){
 			?>
 		</div>
 	</div>
-	<div class="menu">
-	<a href = "index.php"> Forum </a> |
-	<a href = "profile.php"> Profile </a> |
-	<a href = "login.php"> <?php echo $login; ?> </a> | 
-	<a href = "config_page.php"> Admin Panel </a> |
-	<a href = "issues.php"> Issues </a> |
-	<a href = "contact.php"> Contact </a>
+
+<?php echo $menu_html; ?>
+
+<div class="about-us">
+<h1>About us</h1>
+<table class="tabel">
+	<tr>
+		<td><h2><a href="http://www.facebook.com/simon.csoma?fref=ts">simon csoma</a></h2></td>
+		<td><h2><a href="http://www.facebook.com/kasper.vanveen.7">kasper van veen</a></h2></td>
+		<td><h2><a href="http://www.facebook.com/olaf.vanhouten?ref=ts&fref=ts">olaf van houten</a></h2></td>
+	</tr>
+	<tr>
+		<td>informatie</td>
+		<td>informatie</td>
+		<td>informatie</td>
+	</tr>
+
+</table>
 </div>
-
-
-<form id="contactform" action="contact.php#" method="post">
-    <div class="row">
-        <label for="name">Name*</label>
-        <span class="fieldbox"><input type="text" name="name" id="name" value=""></span>
-    </div>
-    <div class="row">
-        <label for="email">Email*</label>
-        <span class="fieldbox"><input type="text" name="email" id="email" value=""></span>
-    </div>
-    <div class="row">
-        <label for="msg">Message</label>
-        <span class="msgbox"><textarea class="area" id="msg" name="msg" rows="8" cols="30"></textarea></span>
-    </div>
-
-    <input type="submit" value="Send" id="sendbutton" name="sendbutton">
-    <p>Fields with "*" are required field.</p>
-</form>
 </body>
 </html>

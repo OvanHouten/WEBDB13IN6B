@@ -1,73 +1,92 @@
 <?php
-session_start();
-if(!isset($_SESSION['User_ID'])){
-	$user = 'Guest';
-	$login = 'Log in';
-} else {
-	$login = 'Log out';
-	$user = $_SESSION['User'];
-}
-?>
-<!DOCTYPE html>
+include_once('menu.php');
+include_once('db.php');
+
+$category_id = intval($_REQUEST['category_id']);
+
+$query = 'SELECT Name FROM Categories WHERE ID = ?';
+
+$categories_results = $db->prepare($query);
+$categories_results->bindValue(1, $category_id);
+$categories_results->execute();
+
+$tmp = $categories_results->fetch();
+$category_title = $tmp['Name'];
+
+$page_title = 'Topics of category "'. $category_title .'"';
+
+?><!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Topics of subject "Hoi"</title>
-	<link rel="stylesheet" type="text/css" href="./index_files/StandaardOpmaak.css">
+    <title><?php echo $page_title ?></title>
+	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
+	<link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>
 
-	<div class="banner">
-		<div style="float:left;margin-left:7px">
-			Subject
-		</div>
-		<div align="right"  style="overflow: hidden;margin-right:7px;">
-			<?php
-				echo "Welcome ".$user;
-			?>
-		</div>
-	</div>
+<div class="banner"><?php echo $page_title ?></div>
 
-<div class="menu">
-	<a href = "index.php"> Forum </a> |
-	<a href = "profile.php"> Profile </a> |
-	<a href = "login.php"> <?php echo $login; ?> </a> | 
-	<a href = "config_page.php"> Admin Panel </a> |
-	<a href = "issues.php"> Issues </a> |
-	<a href = "contact.php"> Contact </a>
-</div>
-
+<?php echo $menu_html; ?>
 
 <table class="topic-table">
 <tbody>
     <tr>
-        <th width="60%">Topic name</th>
+        <th width="50%">Topic name</th>
         <th width="20%">Author</th>
-        <th width="20%">Last posted</th>
+        <th width="30%">Last posted</th>
     </tr>
+<?php
+    $query = 'SELECT T.ID, T.Title, U.Name, MAX(R.Time) as last_posted'
+           . ' FROM Threads as T'
+           . ' LEFT JOIN User as U ON U.ID = T.User_ID'
+           . ' LEFT JOIN Replys as R ON R.Thread_ID = T.ID'
+           . ' WHERE T.Categorie_ID = ?'
+           . ' GROUP BY T.ID'
+           . ' ORDER BY T.ID, T.Title';
+
+    $threads_results = $db->prepare($query);
+    $threads_results->bindValue(1, $category_id);
+    $threads_results->execute();
+
+    $thread_count = 0;
+
+    while ($thread = $threads_results->fetch()) {
+        $thread_count++;
+?>
     <tr>
-        <td><a href="thread.html">Topic 1</a></td>
-        <td></td>
-        <td></td>
+        <td><a href="thread.php?thread_id=<?php echo $thread['ID'] ?>"><?php echo $thread['Title'] ?></a></td>
+        <td><?php echo $thread['Name'] ?></td>
+<?php
+    if ($thread['last_posted']) {
+?>
+        <td><?php echo $thread['last_posted'] ?></td>
+<?php
+    } else {
+?>
+        <td><em>No replies</em></td>
+<?php
+    }
+?>
     </tr>
+<?php
+    }
+
+    if (!$thread_count) {
+?>
     <tr>
-        <td><a href="thread.html">Topic 2</a></td>
-        <td></td>
-        <td></td>
+        <td colspan=3><em>There are no topics created in this category yet.</em></td>
     </tr>
-    <tr>
-        <td><a href="thread.html">Topic 3</a></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="thread.html">Topic 4</a></td>
-        <td></td>
-        <td></td>
-    </tr>
+<?php
+    }
+?>
 </tbody>
 </table>
+
+<div class="new-thread-bar">
+    <a href="new_thread.php?category_id=<?php echo $category_id; ?>">New thread</a>
+</div>
 
 </body>
 </html>

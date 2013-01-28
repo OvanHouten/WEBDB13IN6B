@@ -9,12 +9,13 @@ $page_title = "Forum index";
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?php echo $page_title; ?></title>
-	<link rel="stylesheet" type="text/css" href="./index_files/StandaardOpmaak.css">
+	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
+	<link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>
 
-<h1 class="banner"><?php echo $page_title; ?></h1>
+<div class="banner"><?php echo $page_title; ?></div>
 
 <?php echo $menu_html; ?>
 
