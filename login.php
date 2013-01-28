@@ -47,8 +47,8 @@ if(!isset($_SESSION['User_ID'])){
 <div class="menu">
 	<a href = "index.php"> Forum </a> |
 	<a href = "profile.php"> Profile </a> |
-	<a href = "login.php"> <?php echo $login; ?> </a> | 
-	<a href = "config_page.php"> Admin Panel </a> |
+	<a href = "login.php"> <?php echo $login; ?> </a> | <?php if(isset($_SESSION['Acces_ID'])) { if($_SESSION['Acces_ID'] == 0){ ?>
+	<a href = "config_page.php"> Admin Panel </a> | <?php } } ?>
 	<a href = "issues.php"> Issues </a> |
 	<a href = "contact.php"> Contact </a>
 </div>

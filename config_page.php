@@ -3,10 +3,24 @@ session_start();
 if(!isset($_SESSION['User_ID'])){
 	$user = 'Guest';
 	$login = 'Log in';
-} else {
-	$login = 'Log out';
-	$user = $_SESSION['User'];
+	$_SESSION['Error'] = 'You need to log in to see this page';
+	header( 'Location: login.php' );
+	exit;
+} else if($_SESSION['Acces_ID'] != 0){
+	header('HTTP/1.0 404 Not Found');
+	echo "<h1>404 Not Found</h1>";
+    echo "The page that you have requested could not be found.";
+	echo $_SESSION['Acces_ID'] . " = Acces_ID";
+	exit;
 }
+$user = $_SESSION['User'];
+$login = 'Log out';
+$dbusername='webdb13IN6B';
+$dbpassword='stafrana';
+$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
+$profile=$db->prepare('SELECT Name FROM Access_Name');
+$profile->execute();
+$row = $profile->fetchAll();
 ?>
 <html>
 <head>
@@ -85,6 +99,18 @@ Control panel
 					<form method ="post" action="addforum.php">
 						<label for="name">Forum Name:</label><br>
 						<input name="name" /><br>
+						Select a can see rank.<br>
+						
+						<?php
+							echo $row['Name'];
+							foreach($row['Name'] as $rank['Name']) {
+							echo $rank;
+						}?>
+						<select name="mydropdown">
+							<?php foreach($row as $rank) {?>
+							<option value="<?php echo $rank;?>"><?php echo $rank;?></option>
+							<?php } ?>
+						</select>
 						<button type="submit"> Submit </button>
 					</form>
 					<?php
