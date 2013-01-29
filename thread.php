@@ -1,22 +1,13 @@
 <?php 
-session_start();
-if(!isset($_SESSION['User_ID'])){
-	$user = 'Guest';
-	$login = 'Log in';
-} else {
-	$login = 'Log out';
-	$user = $_SESSION['User'];
-}
+include_once('menu.php');
+start();
+include_once('db.php');
 if(!isset($_SESSION['User_ID'])){
 	//header("Location: http://webdb.science.uva.nl/webdb13IN6B/login.php");
 }
 
-$dbusername='webdb13IN6B';
-$dbpassword='stafrana';
-$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
-
 //hier moet nog wat gebeuren met het linken van de threads via sessies(denk ik).
-$thread_ID = 1;
+$thread_ID = intval($_REQUEST['thread_id']);
 
 $thread=$db->prepare('SELECT * FROM Threads WHERE ID = :ID');
 $thread->bindValue(':ID', $thread_ID);
@@ -26,6 +17,7 @@ $titel = $row['Title'];
 $UserID = $row['User_ID'];
 $since = $row['Time'];
 $post = $row['Message'];
+$category_id = $row['Categorie_ID'];
 $threadID = $row['ID'];
 
 $posterinfo = $db->prepare('SELECT * FROM User WHERE ID = :ID');
@@ -41,6 +33,14 @@ $replynmr->bindValue(':ID', $UserID);
 $replynmr->execute();
 $row = $replynmr->fetch();
 $posts = $row['COUNT(User_ID)'];
+
+
+$category_results = $db->prepare('SELECT Name FROM Categories WHERE
+								ID =:ID');
+$category_results->bindValue(':ID', $category_id);
+$category_results->execute();
+$row = $category_results->fetch();
+$category_name = $row['Name'];
 ?>
 
 <html>
@@ -102,6 +102,8 @@ $posts = $row['COUNT(User_ID)'];
 	.path{
 		font-size:10pt;
 		margin-top:10px;
+		font-family:sans-serif;
+		color:black;
 	}
 	.textarea {
 		left:20%;
@@ -115,29 +117,16 @@ $posts = $row['COUNT(User_ID)'];
 </head>
 
 <body>
-		<div class="banner">
-		<div style="float:left;margin-left:7px">
-			Thread
-		</div>
-		<div align="right"  style="overflow: hidden;margin-right:7px;">
-			<?php
-				echo "Welcome ".$user;
-			?>
-		</div>
-	</div>
-	<div class="menu">
-	<a href = "index.php"> Forum </a> |
-	<a href = "profile.php"> Profile </a> |
-	<a href = "login.php"> <?php echo $login; ?> </a> | 
-	<a href = "config_page.php"> Admin Panel </a> |
-	<a href = "issues.php"> Issues </a> |
-	<a href = "contact.php"> Contact </a>
-</div>
+
+<?php banner("Thread \"".htmlentities($titel)."\""); ?>
+
+<?php menu(); ?>
 
 
 	<div class="path">
-		<a href="index.php">Forum</a> > <a href="thread.php">subonderwerp</a> >
-		<a href="thread.php">Dit is mijn draad yeah!</a>
+		<a href="index.php">Forum</a> &gt;
+        <a href="topics.php?category_id=<?php echo $category_id ?>"><?php echo htmlentities($category_name); ?></a> &gt;
+        <?php echo htmlentities($titel); ?>
 	</div>
 
 	<!-- FIRST POST THREADSTARTER -->
@@ -250,14 +239,20 @@ $posts = $row['COUNT(User_ID)'];
 			</p></center>
 			</div>
 
-		<form name="newpost" action="reply.php" method="post">
+
+        <script>
+        function checkIfLeeg(e) {
+            return document.forms["newpost"]["message"].value.replace(/^\s+|\s+$/g,'') != '';
+        }
+        </script>
+		<form name="newpost" action="reply.php" method="post" onsubmit="checkIfLeeg()">
 			<div class="upperbar" align="right">
 				<input type="submit" value="Reply">
 				<!--<a href="Reply.php" type="submit">Reply</a>-->
 			</div>
 
 			<div class="post">
-				<textarea name="message" class="textarea" name="NewPost"></textarea>
+				<textarea name="message" class="textarea"></textarea>
 			</div>
 		</form>
 	</div>
