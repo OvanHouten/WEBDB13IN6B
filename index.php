@@ -1,76 +1,86 @@
 <?php
-$page_title = "Forum index";
-$dbusername='webdb13IN6B';
-$dbpassword='stafrana';
-$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
+include_once('menu.php');
+include_once('db.php');
 
-$profile=$dbuser->prepare('SELECT * FROM Forums ');
-$profile->execute();
-$forum = $profile->fetch();
+$page_title = "Forum index";
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?php echo $page_title; ?></title>
-	<link rel="stylesheet" type="text/css" href="./index_files/StandaardOpmaak.css">
+	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
+	<link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>
 
-<h1 class="banner"><?php echo $page_title; ?></h1>
+<div class="banner"><?php echo $page_title; ?></div>
 
-<div class="menu">
-	<a href = "index.php"> Forum </a> |
-	<a href = "profile.php"> Profile </a> |
-	<a href = "login.php"> Login </a> | 
-	<a href = "config page.php"> Admin Panel </a> |
-	<a href = "bugreport.php"> Issues </a> |
-	<a href = "contact.php"> Contact </a>
-</div>
+<?php echo $menu_html; ?>
 
 <?php
-while ($forum = /*mysql_fetch_array($forum_results)*/) {
+
+$forums_result = $db->prepare('SELECT ID, Forum_Name FROM Forums');
+$forums_result->execute();
+
+while ($forum = $forums_result->fetch()) {
+    $forum_id = $forum['ID'];
 ?>
 <table class="subject-table">
 <tbody>
     <tr>
-        <th width="30%"><?php echo $forum['Forum_name'] ?></th>
+        <th width="30%"><?php echo $forum['Forum_Name'] ?></th>
         <th width="50%">Last post</th>
         <th width="10%">Topics</th>
         <th width="10%">Reactions</th>
     </tr>
 <?php
-    $query = 'SELECT C.ID as CID, C.Name as CName,'
-           . ' COUNT(T.ID) as Topics, COUNT(R.ID) as Replies'
-           . ' FROM Catagories as C'
-           . ' LEFT JOIN Threads as T ON T.Catagorie_ID = C.ID'
+    $query = 'SELECT C.ID, C.Name, COUNT(T.ID) as Topics, COUNT(R.ID) as Replies'
+           . ' FROM Categories as C'
+           . ' LEFT JOIN Threads as T ON T.Categorie_ID = C.ID'
            . ' LEFT JOIN Replys as R ON R.Thread_ID = T.ID'
-           . ' WHERE C.Forum_ID = '.$forum['ID']
+           . ' WHERE C.Forum_ID = ?'
            . ' GROUP BY C.ID'
            . ' ORDER BY C.Name';
 
-    $category_results = mysql_query($query) or die(mysql_error());
+	$categories_result = $db->prepare($query);
+	$categories_result->bindValue(1, $forum_id);
+	$categories_result->execute();
+    $catergory_count = 0;
 
-    while ($category = mysql_fetch_array($category_results)) {
+    while ($category = $categories_result->fetch()) {
+        $catergory_count++;
+
         $query = 'SELECT T.ID, T.Title FROM Threads as T'
-               . ' WHERE T.Catagorie_ID = '.$category['CID']
-               . ' ORDER BY T.ID DESC LIMIT 1';
+            . ' WHERE T.Categorie_ID = ?'
+            . ' ORDER BY T.ID DESC LIMIT 1';
 
-        $last_post_result = mysql_query($query) or die(mysql_error());
-        $last_post = mysql_fetch_array($last_post_result);
+        $threads_result = $db->prepare($query);
+        $threads_result->bindValue(1, $category['ID']);
+        $threads_result->execute();
+        $last_post = $threads_result->fetch();
 ?>
     <tr>
-        <td><a href="topics.php?category_id=<?php echo $category['CID']; ?>"><?php echo $category['CName']; ?></a></td>
+        <td><a href="topics.php?category_id=<?php echo $category['ID']; ?>"><?php echo $category['Name']; ?></a></td>
         <td>
 <?php if ($last_post) { ?>
             <a href="thread.php?thread_id=<?php echo $last_post['ID']; ?>"><?php echo $last_post['Title']; ?></a></td>
 <?php } else { ?>
-            <em>No threads in this category.</em>
+            <em>There are no topics in this category yet.</em>
 <?php } ?>
         <td><?php echo $category['Topics']; ?></td>
         <td><?php echo $category['Replies']; ?></td>
     </tr>
+<?php
+    }
+
+    if (!$catergory_count) {
+?>
+    <tr>
+        <td colspan="4"><em>There are no categories in this forum yet.</em></td>
+    </tr>
+
 <?php
     }
 ?>
@@ -79,43 +89,6 @@ while ($forum = /*mysql_fetch_array($forum_results)*/) {
 <?php
 }
 ?>
-
-<!--
-<table class="subject-table">
-<tbody>
-    <tr>
-        <th width="50%">Subjects</th>
-        <th width="30%">Last post</th>
-        <th width="10%">Topics</th>
-        <th width="10%">Reactions</th>
-    </tr>
-    <tr>
-        <td><a href="topics.html">Subject 1</a></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="topics.html">Subject 2</a></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="topics.html">Subject 3</a></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><a href="topics.html">Subject 4</a></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-</tbody>
-</table>
--->
 
 </body>
 </html>

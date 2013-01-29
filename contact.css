@@ -1,0 +1,39 @@
+.topic-table a, .subject-table a {
+    color: black;
+}
+
+table {
+    border-collapse:collapse;
+    width:100%;
+    margin-top:35px;
+}
+
+table,td,th {
+    border:1px solid #3f48cc;
+    text-align: left;
+}
+
+th {
+    background-color:#3f48cc;
+    color:white;
+    padding: 10px 5px;
+}
+
+td {
+    padding: 5px;
+}
+
+.about-us {
+    box-sizing:border-box;
+	background-color:#3f48cc;
+	padding:3px;
+	color:white;
+	font-weight:bold;
+	margin-top:35px;
+	padding: 10px;
+}
+
+.about-us a:link {color:white;}
+.about-us a:visited {color:white;}
+.about-us a:hover {color:white;}
+.about-us a:active {color:white;}
