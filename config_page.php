@@ -18,16 +18,18 @@ $login = 'Log out';
 $dbusername='webdb13IN6B';
 $dbpassword='stafrana';
 $db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
-$profile=$db->prepare('SELECT Name FROM Access_Name');
-$profile->execute();
-$row = $profile->fetchAll();
+
 ?>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css" />
 	<style>
-	
+		#line {
+			bottom: 10%;
+			height: 2px;
+			background-color: #3F48CC;
+		}
 		.settingbox{
 			float: rigth;
 			margin-top: 25px;
@@ -93,24 +95,47 @@ Control panel
 				} else if($_GET['submenu'] === 'Ranks'){
 					echo "This is Ranks!";
 				} else if($_GET['submenu'] === 'Forums'){
-					?>
-					Here you can create new forums.<br>
+				
+					$profile=$db->prepare('SELECT Name FROM Access_Name');
+					$profile->execute();
+					$AccessNames = $profile->fetchAll();
+					
+					$profile=$db->prepare('SELECT Forum_name FROM Forums');
+					$profile->execute();
+					$ForumNames= $profile->fetchAll();
+					
+					if(isset($_SESSION['Error'])) {
+						echo $_SESSION['Error'];
+						unset($_SESSION['Error']);
+					}?>
+					Here you can create new forums or catagories for the forums.<br>
 					By default there will not be any catagories.<br><br>
 					<form method ="post" action="addforum.php">
 						<label for="name">Forum Name:</label><br>
-						<input name="name" /><br>
-						Select a can see rank.<br>
-						
-						<?php
-							echo $row['Name'];
-							foreach($row['Name'] as $rank['Name']) {
-							echo $rank;
-						}?>
+						<input name="name" /><br><br>
+						Permissions:<br><br>
+						Select a Permission Rank for every of the following attributes:<br> 
+						Can see:<br>
 						<select name="mydropdown">
-							<?php foreach($row as $rank) {?>
-							<option value="<?php echo $rank;?>"><?php echo $rank;?></option>
+							<?php foreach($AccessNames as $rank) {?>
+							<option value="<?php echo $rank['Name'];?>"><?php echo $rank['Name'];?></option>
 							<?php } ?>
-						</select>
+						</select><br>
+						<button type="submit"> Submit </button>
+					</form>
+					<br><div id="line">&nbsp;</div><br>
+					
+					<form method ="post" action="addcatagory.php">
+						<label for="name">Catagory Name:</label><br>
+						<input name="name" /><br><br>
+						Permissions:<br><br>
+						Select a Permission Rank for every of the following attributes:<br> 
+						Can see:<br>
+						<select name="mydropdown">
+							<?php foreach($ForumNames as $name) {?>
+							<option value="<?php echo $name['Forum_name'];?>"><?php echo $name['Forum_name'];?></option>
+							<?php } ?>
+						</select><br>
 						<button type="submit"> Submit </button>
 					</form>
 					<?php
@@ -122,6 +147,8 @@ Control panel
 			}
 			?>
 	</div>
+	<br>
+	<br>
 </div>
 
 
