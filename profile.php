@@ -85,7 +85,7 @@ $posts = $row2['COUNT(User_ID)']
 	<a href = "index.php"> Forum </a> |
 	<a href = "profile.php"> Profile </a> |
 	<a href = "login.php"> Login </a> | 
-	<a href = "config page.php"> Admin Panel </a> |
+	<a href = "config_page.php"> Admin Panel </a> |
 	<a href = "issues.php"> Issues </a> |
 	<a href = "contact.php"> Contact </a> 
 	</div>

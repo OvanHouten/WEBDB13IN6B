@@ -15,12 +15,12 @@ list($username,$domain)=split('@',$_POST['email']);
 if(!checkdnsrr($domain)) {
 	$_SESSION['Error'] = "Invailid email 2";
 	header( 'Location: register.php');
-	exit;
+	exit;d
 }
 
 $dbusername='webdb13IN6B';
 $dbpassword='stafrana';
-$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
+$db = new PDO("mysql:host=webdb.science.uva.nl;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
 
 $profile=$db->prepare('SELECT 1 FROM User WHERE Name = :Name');
 $profile->bindValue(':Name',$_POST['name']);

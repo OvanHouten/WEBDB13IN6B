@@ -1,23 +1,21 @@
 <?php 
-session_start();
-if(!isset($_SESSION['User_ID'])){
-	$user = 'Guest';
-	$login = 'Log in';
-	$_SESSION['Error'] = 'You need to log in to see this page';
-	header( 'Location: login.php' );
-	exit;
-} else if($_SESSION['Acces_ID'] != 0){
-	header('HTTP/1.0 404 Not Found');
-	echo "<h1>404 Not Found</h1>";
-    echo "The page that you have requested could not be found.";
-	echo $_SESSION['Acces_ID'] . " = Acces_ID";
-	exit;
-}
-$user = $_SESSION['User'];
-$login = 'Log out';
-$dbusername='webdb13IN6B';
-$dbpassword='stafrana';
-$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
+
+	require('menu.php');
+	start();
+	if(!isset($_SESSION['User_ID'])){
+		$_SESSION['Error'] = 'You need to log in to see this page';
+		header( 'Location: login.php' );
+		exit;
+	} else if($_SESSION['Acces_ID'] != 0){
+		header('HTTP/1.0 404 Not Found');
+		echo "<h1>404 Not Found</h1>";
+		echo "The page that you have requested could not be found.";
+		echo $_SESSION['Acces_ID'] . " = Acces_ID";
+		exit;
+	}
+	$dbusername='webdb13IN6B';
+	$dbpassword='stafrana';
+	$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
 
 ?>
 <html>
@@ -64,18 +62,10 @@ $db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbuserna
 	</style>
 </head>
 <body>
-<div class="banner">
-Control panel
-</div>
-<div class="menu">
-	<a href = "index.php"> Forum </a> |
-	<a href = "profile.php"> Profile </a> |
-	<a href = "login.php"> <?php echo $login; ?> </a> | 
-	<a href = "config_page.php"> Admin Panel </a> |
-	<a href = "issues.php"> Issues </a> |
-	<a href = "contact.php"> Contact </a>
-</div>
-
+	<?php
+		banner("Admin pannel");
+		menu();
+	?>
 <div>
 	<div class="submenu">
 		<h3>Submenu</h3><br>

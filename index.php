@@ -1,7 +1,7 @@
 <?php
 include_once('menu.php');
 include_once('db.php');
-
+start();
 $page_title = "Forum index";
 ?>
 <!DOCTYPE html>
@@ -15,9 +15,9 @@ $page_title = "Forum index";
 
 <body>
 
-<div class="banner"><?php echo $page_title; ?></div>
-
-<?php echo $menu_html; ?>
+<?php 
+	banner("index");
+	menu(); ?>
 
 <?php
 
