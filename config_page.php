@@ -121,7 +121,7 @@
 						Permissions:<br><br>
 						Select a Permission Rank for every of the following attributes:<br> 
 						Can see:<br>
-						<select name="mydropdown">
+						<select name="forum_name">
 							<?php foreach($ForumNames as $name) {?>
 							<option value="<?php echo $name['Forum_name'];?>"><?php echo $name['Forum_name'];?></option>
 							<?php } ?>
