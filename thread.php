@@ -1,24 +1,18 @@
 <?php 
 require 'menu.php';
+start();
 
-session_start();
-if(!isset($_SESSION['User_ID'])){
-	$user = 'Guest';
-	$login = 'Log in';
-} else {
-	$login = 'Log out';
-	$user = $_SESSION['User'];
-}
-if(!isset($_SESSION['User_ID'])){
-	//header("Location: http://webdb.science.uva.nl/webdb13IN6B/login.php");
-}
-
+/* 
+ * connectie met de sql database maken.
+ */
 $dbusername='webdb13IN6B';
 $dbpassword='stafrana';
 $db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
 
-//hier moet nog wat gebeuren met het linken van de threads via sessies(denk ik).
-$thread_ID = 1;
+/*
+ * Ophalen van gegevens van de Titelpost
+ */
+$thread_ID = $_REQUEST['thread_id'];
 
 $thread=$db->prepare('SELECT * FROM Threads WHERE ID = :ID');
 $thread->bindValue(':ID', $thread_ID);
@@ -28,8 +22,12 @@ $titel = $row['Title'];
 $UserID = $row['User_ID'];
 $since = $row['Time'];
 $post = $row['Message'];
+$category_id = $row['Categorie_ID'];
 $threadID = $row['ID'];
 
+/*
+ * Ophalen van gegevens van Thread-poster
+ */
 $posterinfo = $db->prepare('SELECT * FROM User WHERE ID = :ID');
 $posterinfo->bindValue(':ID', $UserID);
 $posterinfo->execute();
@@ -37,12 +35,34 @@ $row = $posterinfo->fetch();
 $username=$row['Name'];
 $usersince=$row['Since'];
 
+/*
+ * Tellen van aantal posts van Thread-poster
+ */
 $replynmr = $db->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
 								User_ID=:ID');
 $replynmr->bindValue(':ID', $UserID);
 $replynmr->execute();
 $row = $replynmr->fetch();
 $posts = $row['COUNT(User_ID)'];
+
+/*
+ * Rank ophalen van de Thread-poster
+ */
+$ranks = $db->prepare('SELECT Name FROM Ranks WHERE ID = (SELECT MAX(ID) FROM Ranks WHERE number_of_posts < :posts)');
+$ranks->bindValue(':posts', $posts);
+$ranks->execute();
+$row3 = $ranks->fetch();
+$rank = $row3['Name'];
+
+/*
+ * ophalen van de categorie-naem waarin de thread zich bevindt
+ */
+$category_results = $db->prepare('SELECT Name FROM Categories WHERE
+								ID =:ID');
+$category_results->bindValue(':ID', $category_id);
+$category_results->execute();
+$row = $category_results->fetch();
+$category_name = $row['Name'];
 ?>
 
 <html>
@@ -107,6 +127,11 @@ $posts = $row['COUNT(User_ID)'];
 		font-family:sans-serif;
 		color:black;
 	}
+	.path a:link {color:black;text-decoration: none;}     
+	.path a:visited {color:black;text-decoration: none;} 
+	.path a:hover {color:black;text-decoration: none;}  
+	.path a:active {color:black;text-decoration: none;}
+	
 	.textarea {
 		left:20%;
 		width:100%;
@@ -119,15 +144,17 @@ $posts = $row['COUNT(User_ID)'];
 </head>
 
 <body>
+	<!-- Banner en Menubalk -->
 	<?php  
-		banner("Profile");
+		banner("Forum - " . $titel);
 		menu();
 	?>
 
-
+	<!-- afgelopen path van the forumboom -->
 	<div class="path">
-		<a href="index.php">Forum</a> > <a href="thread.php">subonderwerp</a> >
-		<a href="thread.php">Dit is mijn draad yeah!</a>
+		<a href="index.php">Forum</a> &gt;
+        <a href="topics.php?category_id=<?php echo $category_id ?>"><?php echo htmlentities($category_name); ?></a> &gt;
+        <?php echo htmlentities($titel); ?>
 	</div>
 
 	<!-- FIRST POST THREADSTARTER -->
@@ -136,7 +163,7 @@ $posts = $row['COUNT(User_ID)'];
 			<center><?php echo $username ?><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
-				Level 1<br>
+				Rank: <?php echo $rank ?><br>
 				Posts: <?php echo $posts ?> <br>
 				Joined:<br>
 				<?php echo (date("d M Y H:i", strtotime($usersince))); ?>
@@ -158,17 +185,29 @@ $posts = $row['COUNT(User_ID)'];
 
 	<!-- PostLoading Algorithm -->
 	<?php
+	/*
+	 *	Ophalen van alle gegevens van de reply's van een thread
+	 */
 	$thread=$db->prepare('SELECT * FROM Replys WHERE Thread_ID = :ID');
 	$thread->bindValue(':ID', $thread_ID);
 	$thread->execute();
 	$arrayrows = $thread->fetchAll();
 
+	/* 
+	 * Door de array van rows heen loopen tot het eind
+	 */
 	foreach ($arrayrows as $row) {
+		/*
+		 * van elke row de gegevens ophalen
+		 */
 		$nmrpost = $row['Post_number'];
 		$timepost = $row['Time'];
 		$post = $row['Text'];
 		$UserID = $row['User_ID'];
 		
+		/*
+		 * ophalen van poster-gegevens van desbetreffende post
+		 */
 		$userinfo=$db->prepare('SELECT * FROM User WHERE ID = :ID');
 		$userinfo->bindValue(':ID', $UserID);
 		$userinfo->execute();
@@ -177,19 +216,32 @@ $posts = $row['COUNT(User_ID)'];
 		$userpost = $row['Name'];
 		$timejoined = $row['Since'];
 		
+		/*
+		 * Aantal posts van desbetreffende poster tellen
+		 */
 		$replynmr = $db->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
 								User_ID=:ID');
 		$replynmr->bindValue(':ID', $UserID);
 		$replynmr->execute();
 		$row2 = $replynmr->fetch();
-		$posts = $row2['COUNT(User_ID)']
+		$posts = $row2['COUNT(User_ID)'];
+		
+		/*
+		 * Rank van desbetreffende poster ophalen
+		 */
+		$ranks = $db->prepare('SELECT Name FROM Ranks WHERE ID = (SELECT MAX(ID) FROM Ranks WHERE number_of_posts < :posts)');
+		$ranks->bindValue(':posts', $posts);
+		$ranks->execute();
+		$row3 = $ranks->fetch();
+		$rank = $row3['Name'];
 	?>
+	<!-- Alle php-variabelen op hun plek in de tamplate zetten -->
 	<div class="template">
 		<div class="profilebar">
 			<center><?php echo $userpost ?><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
-				Level 1<br>
+				Rank: <?php echo $rank ?><br>
 				Posts: <?php echo $posts ?><br>
 				Joined:<br>
 				<?php echo date("d M Y H:i", strtotime($timejoined)) ?>
@@ -212,42 +264,62 @@ $posts = $row['COUNT(User_ID)'];
 
 	<!-- New post textarea -->
 	<?php
+	/*
+	 * Gebeurd alleen als de gebruiker ingelogd is
+	 */
 	if(isset($_SESSION['User_ID'])) {
+		/*
+		 * Alles van de ingelogde gebruiker laden
+		 */
 		$userlogin = $db->prepare('SELECT * FROM User WHERE ID = :ID');
 		$userlogin->bindValue(':ID', $_SESSION['User_ID']);
 		$userlogin->execute();
 		$row = $userlogin->fetch();
 		$useruname = $row['Name'];
 		$usersince = $row['Since'];
-	
+		
+		/*
+		 * Aantal posts van de ingelogde gebruiker wordt geteld
+		 */
 		$replynmr = $db->prepare('SELECT COUNT(User_ID) FROM Replys 
 									WHERE User_ID=:ID');
 		$replynmr->bindValue(':ID', $_SESSION['User_ID']);
 		$replynmr->execute();
 		$row2 = $replynmr->fetch();
 		$posts = $row2['COUNT(User_ID)'];
+		
+		/*
+		 * Rang van de ingelogde gebruiker wordt opgehaald
+		 */
+		$ranks = $db->prepare('SELECT Name FROM Ranks WHERE ID = (SELECT MAX(ID) FROM Ranks WHERE number_of_posts < :posts)');
+		$ranks->bindValue(':posts', $posts);
+		$ranks->execute();
+		$row3 = $ranks->fetch();
+		$rank = $row3['Name'];
 	?>
-	
+	<!-- Reply-blok, kan alleen gezien worden door ingelogde gebruikers -->
 	<div class="template">
 		<div class="profilebar">
-			<center><?php echo $useruname ?><br><br><!---->
+			<center><?php echo $useruname ?><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
-				Level 1<br>
-				Posts: <?php echo $posts?><br><!---->
+				Rank: <?php echo $rank ?><br>
+				Posts: <?php echo $posts?><br>
 				Joined:<br>
-				<?php echo (date("d M Y H:i", strtotime($usersince))); ?><!---->
+				<?php echo (date("d M Y H:i", strtotime($usersince))); ?>
 			</p></center>
 			</div>
 
 		<form name="newpost" action="reply.php" method="post">
 			<div class="upperbar" align="right">
+				<input type="hidden" value="<?php echo $thread_ID ?>" 
+					name="Thread_ID">
 				<input type="submit" value="Reply">
-				<!--<a href="Reply.php" type="submit">Reply</a>-->
 			</div>
 
 			<div class="post">
-				<textarea name="message" class="textarea" name="NewPost"></textarea>
+				<textarea name="message" class="textarea" 
+					name="NewPost"></textarea>
 			</div>
 		</form>
 	</div>
