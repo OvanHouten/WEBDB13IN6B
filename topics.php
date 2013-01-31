@@ -2,6 +2,11 @@
 include_once('menu.php');
 start();
 include_once('db.php');
+start();
+
+if(!isset($_SESSION['User_ID'])){
+	$_SESSION['Acces_ID'] = 2;
+}
 
 $category_id = intval($_REQUEST['category_id']);
 
@@ -16,7 +21,8 @@ $category_title = $tmp['Name'];
 
 $page_title = 'Topics of category "'. $category_title .'"';
 
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -27,16 +33,20 @@ $page_title = 'Topics of category "'. $category_title .'"';
 
 <body>
 
-<?php banner($page_title); ?>
-
-<?php menu(); ?>
+<?php 
+banner($page_title);
+menu(); 
+?>
 
 <table class="topic-table">
 <tbody>
     <tr>
         <th width="50%">Topic name</th>
         <th width="20%">Author</th>
-        <th width="30%">Last posted</th>
+        <th width="*%">Last posted</th>
+        <?php if($_SESSION['Acces_ID'] <= 1) {?>
+        	<th width="4%"></th>
+        <?php } ?>
     </tr>
 <?php
     $query = 'SELECT T.ID, T.Title, U.Name, MAX(R.Time) as last_posted'
@@ -69,7 +79,10 @@ $page_title = 'Topics of category "'. $category_title .'"';
         <td><em>No replies</em></td>
 <?php
     }
-?>
+?>		
+    	<?php if($_SESSION['Acces_ID'] <= 1) {?>
+		<td align="center"><center>X</center></td>
+		<?php } ?>
     </tr>
 <?php
     }

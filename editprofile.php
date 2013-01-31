@@ -18,32 +18,26 @@ $dbusername='webdb13IN6B';
 $dbpassword='stafrana';
 $dbuser = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
 
-$getID=$dbuser->prepare('SELECT ID FROM User WHERE Name = :username');
-$getID->bindValue(':username', $_REQUEST['username']);
-$getID->execute();
-$row = $getID->fetch();
-$UserID = $row['ID'];
-
 /*
  * Ophalen van de User gegevens en in php-variabelen zetten
  */
 $profile=$dbuser->prepare('SELECT * FROM User WHERE ID = :ID');
-$profile->bindValue(':ID', $UserID);
+$profile->bindValue(':ID', $_SESSION['User_ID']);
 $profile->execute();
 $row = $profile->fetch();
 $username = $row['Name'];
 $since = $row['Since'];
 $fname = $row['FirstName'];
 $lname = $row['LastName'];
-$job = $row['Job'];
 $aboutme = $row['AboutMe'];
+$job = $row['Job'];
 
 /*
  * Tellen van het aantal posts van een user.
  */
 $replynmr = $dbuser->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
 								User_ID=:ID');
-$replynmr->bindValue(':ID', $UserID);
+$replynmr->bindValue(':ID', $_SESSION['User_ID']);
 $replynmr->execute();
 $row2 = $replynmr->fetch();
 $posts = $row2['COUNT(User_ID)'];
@@ -83,30 +77,34 @@ $rank = $row3['Name'];
 			color:white;
 			font-size:13pt;
 		}
-		.upperbar a:link {color:white;text-decoration: none;}     
-		.upperbar a:visited {color:white;text-decoration: none;} 
-		.upperbar a:hover {color:white;text-decoration: none;}  
-		.upperbar a:active {color:white;text-decoration: none;}
 		.column{
 			background-color:white;
 			padding-top:5px;
 			padding-left:5px;
-			height:110px;
+			height:115px;
 			width:*%;
 			color:black;
 			font-family:sans-serif;
 			font-size:13pt;
-			}
+		}
 		.infobox{
 			background-color:white;
 			padding-left:5px;
-			padding-top:5px;
+			padding-right:5px;
 			margin-left:20%;
 			height:155px;
 			width:*%;
 			color:black;
 			font-family:sans-serif;
 			font-size:10pt;
+		}
+		.textarea {
+			left:20%;
+			width:100%;
+			height:135px;
+			font-family:sans-serif;
+			font-size:10pt;
+			resize:none;
 		}
 	</style>
 </head>
@@ -118,9 +116,10 @@ $rank = $row3['Name'];
 		menu();
 	?>
 	
-	<!-- Profile-blok, alle variabelen zijn al geladen en worden alleen 
-	opgeroepen -->
+	<!-- Edit-Profile-blok, alle variabelen zijn al geladen en worden alleen 
+	opgeroepen  hier staat ook het formulier.-->
 	<div style="box-shadow: 0px 5px 20px #888888;">
+	<form action="edit.php" method="post">
 		<div class="profilebar">
 			<center><?php echo $username ?><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
@@ -131,41 +130,40 @@ $rank = $row3['Name'];
 				<?php echo (date("d-m-Y H:i", strtotime($since))); ?>
 			</p></center>
 		</div>
-		
-		<div class="upperbar" align="right">
-		<?php if($_SESSION['User_ID'] == $UserID){ ?>
-			<a href="editprofile.php">Edit</a>
-		<?php } ?>
+
+		<div align="right" class="upperbar">
+			<input type="submit" value="Change"/>
 		</div>
 
-	<!-- Let op, als de lijst langer word moeten hoogtes worden aangepast -->
 		<div class="column">
 			<table width="80%" style="font-size:12px;">
 <!--			
 			<tr>
-				<td style="padding-top:5px; padding-bottom:6px;" width="50%" ><b>In-game name:</b></td>
-				<td><?php echo $username ?></td>
+				<td width="50%"><b>In-game name:</b></td>
+				<td><input type="text" name="ign" value="<?php echo $username ?>"/></td>
 			</tr>
 -->
 			<tr>
-				<td style="padding-top:5px; padding-bottom:6px;" width="50%" ><b>Firstname:</b></td>
-				<td><?php echo $fname ?></td>
+				<td width="50%"><b>Firstname:</b></td>
+				<td><input type="text" name="fname" value="<?php echo $fname ?>"  /></td>
 			</tr>
 			<tr>
-				<td style="padding-top:5px; padding-bottom:6px" ><b>Lastname:</b></td>
-				<td><?php echo $lname ?></td>
+				<td><b>Lastname:</b></td>
+				<td><input type="text" name="lname" value="<?php echo $lname ?>" /></td>
 			</tr>
 			<tr>
-				<td style="padding-top:5px; padding-bottom:6px"><b>Job:</b></td>
-				<td><?php echo $job ?></td>
+				<td><b>Job:</b></td>
+				<td><input type="text" name="job" value="<?php echo $job ?>" /></td>
 			</tr>
 			</table>
 		</div>
 	
 		<div class="infobox">
 			<b>Info about me: </b><br>
-			<?php echo $aboutme?>
+			<textarea class="textarea" name="aboutme"><?php echo $aboutme ?></textarea>
 		</div>
+		<input method="post" type="hidden" name="Username" value="<?php echo $username ?>" >
+	</form>
 	</div>
 </body>
-</html>
+</html> 

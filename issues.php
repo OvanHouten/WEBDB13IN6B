@@ -1,11 +1,14 @@
 <?php
-session_start();
+require 'menu.php';
+start();
+
+/*
+ * kijk of iemand is ingelogd, anders stuur je em daar naar de inlog pagina.
+ */
 if(!isset($_SESSION['User_ID'])){
-	$user = 'Guest';
-	$login = 'Log in';
-} else {
-	$login = 'Log out';
-	$user = $_SESSION['User'];
+	header("Location: login.php");
+	$_SESSION['Error'] = "You need to log in to see this page";
+	exit;
 }
 ?>
 <html>
@@ -33,7 +36,7 @@ if(!isset($_SESSION['User_ID'])){
 
 		.textarea {
 			width:100%;
-			height:140px;
+			height:260px;
 			font-family:sans-serif;
 		   	font-size:10pt;
 			resize:none;
@@ -42,40 +45,25 @@ if(!isset($_SESSION['User_ID'])){
 </head>
 
 <body>
-		<div class="banner">
-		<div style="float:left;margin-left:7px">
-			Issues
-		</div>
-		<div align="right"  style="overflow: hidden;margin-right:7px;">
-			<?php
-				echo "Welcome ".$user;
-			?>
-		</div>
-	</div>
-	<div class="menu">
-	<a href = "index.php"> Forum </a> |
-	<a href = "profile.php"> Profile </a> |
-	<a href = "login.php"> <?php echo $login; ?> </a> | 
-	<a href = "config_page.php"> Admin Panel </a> |
-	<a href = "issues.php"> Issues </a> |
-	<a href = "contact.php"> Contact </a>
-</div>
-
+	<!-- Banner en Menubalk -->
+	<?php  
+		banner("Profile");
+		menu();
+	?>
+	
+	<!-- Formulier voor verzenden van een report -->
 	<div class="box">
 	<form action="Bugreport.php" method="post" >
+<!--		
 		<label for="name">Name:</label><br>
 		<input type="text" name="name" /><br><br>
 		<label for="email">E-mail:</label><br>
 		<input name="email" type="email" /><br><br>
+-->	
 		<div class="row">
 			<label for="Bugreport">Bug report</label><br>
 			<textarea class="textarea" name="Bugreport" placeholder="Type your bug report here, this may also include grammar and spelling mistakes."></textarea><br>
-		<input type="submit" style="float:right;">
-		<!--
-		<div align="right" style="overflow: hidden;margin-right:7px;">
-			<h3><a type="submit" href="Bugreport.php">Send</a></h3>
-		</div>
-		-->
+		<input type="submit" value="Send" style="float:right;">
 		</div>
 	</form>
 	</div>

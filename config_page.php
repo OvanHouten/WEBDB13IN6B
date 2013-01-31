@@ -1,33 +1,33 @@
 <?php 
-session_start();
-if(!isset($_SESSION['User_ID'])){
-	$user = 'Guest';
-	$login = 'Log in';
-	$_SESSION['Error'] = 'You need to log in to see this page';
-	header( 'Location: login.php' );
-	exit;
-} else if($_SESSION['Acces_ID'] != 0){
-	header('HTTP/1.0 404 Not Found');
-	echo "<h1>404 Not Found</h1>";
-    echo "The page that you have requested could not be found.";
-	echo $_SESSION['Acces_ID'] . " = Acces_ID";
-	exit;
-}
-$user = $_SESSION['User'];
-$login = 'Log out';
-$dbusername='webdb13IN6B';
-$dbpassword='stafrana';
-$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
-$profile=$db->prepare('SELECT Name FROM Access_Name');
-$profile->execute();
-$row = $profile->fetchAll();
+
+	require('menu.php');
+	start();
+	if(!isset($_SESSION['User_ID'])){
+		$_SESSION['Error'] = 'You need to log in to see this page';
+		header( 'Location: login.php' );
+		exit;
+	} else if($_SESSION['Acces_ID'] != 1){
+		header('HTTP/1.0 404 Not Found');
+		echo "<h1>404 Not Found</h1>";
+		echo "The page that you have requested could not be found.";
+		exit;
+	}
+	$dbusername='webdb13IN6B';
+	$dbpassword='stafrana';
+	$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
+
 ?>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css" />
+	<link rel="stylesheet" type="text/css" href="index.css" />
 	<style>
-	
+		#line {
+			bottom: 10%;
+			height: 2px;
+			background-color: #3F48CC;
+		}
 		.settingbox{
 			float: rigth;
 			margin-top: 25px;
@@ -42,6 +42,7 @@ $row = $profile->fetchAll();
 			background-color:#3F48CC;
 			color:white;
 			font-weight:bold;
+			box-shadow: 0px 5px 20px #888888;
 		}
 		.submenu a:link {color:white;text-decoration: none;}     
 		.submenu a:visited {color:white;text-decoration: none;} 
@@ -58,22 +59,23 @@ $row = $profile->fetchAll();
 			padding: 7px;
 			overflow: visible;
 		}
-	
+		
+		.tables{
+			background-color:#3F48CC;
+			color:white;
+			font-weight:bold;
+		}
+		.tables a:link {color:white;text-decoration: none;}     
+		.tables a:visited {color:white;text-decoration: none;} 
+		.tables a:hover {color:white;text-decoration: none;}  
+		.tables a:active {color:white;text-decoration: none;}
 	</style>
 </head>
 <body>
-<div class="banner">
-Control panel
-</div>
-<div class="menu">
-	<a href = "index.php"> Forum </a> |
-	<a href = "profile.php"> Profile </a> |
-	<a href = "login.php"> <?php echo $login; ?> </a> | 
-	<a href = "config_page.php"> Admin Panel </a> |
-	<a href = "issues.php"> Issues </a> |
-	<a href = "contact.php"> Contact </a>
-</div>
-
+	<?php
+		banner("Admin pannel");
+		menu();
+	?>
 <div>
 	<div class="submenu">
 		<h3>Submenu</h3><br>
@@ -89,28 +91,151 @@ Control panel
 				if($_GET['submenu'] === 'General'){
 					echo "This is GENERAL!";
 				} else if($_GET['submenu'] === 'Accounts'){
-					echo "This is Accounts!";
-				} else if($_GET['submenu'] === 'Ranks'){
-					echo "This is Ranks!";
-				} else if($_GET['submenu'] === 'Forums'){
+					if(empty($_GET['page']) || $_GET['page'] < 0){
+						$page = 0;
+						$page2 = 6;
+					} else {
+						$page = $_GET['page'];
+						$page2 = $page + 5;
+					}
+					$sql = 'SELECT * FROM User ORDER BY User.ID ASC LIMIT %d,%d';
+					$sql = sprintf($sql, $page, $page2);
+					$profile=$db->prepare($sql);
+					$profile->execute();
+					$users = $profile->fetchAll();
+					$profile=$db->prepare('SELECT * FROM Access_Name');
+					$profile->execute();
+					$ranks = $profile->fetchAll();
 					?>
-					Here you can create new forums.<br>
+					<table border = '1'>
+						<tr>
+							<th>User Name</th>
+							<th>Acces</th>
+						</tr>
+						<?php
+							foreach($users as $user){
+						?>
+						<tr>
+							<form methode="post" action="edit_user.php">
+								<td>
+									<input type="field" name="name" value=<?php echo $user['Name'];?>>
+								</td>
+								<td>
+									<select name="acces_id" >
+										<?php foreach($ranks as $rank) {?>
+											<option value=<?php echo $rank['ID'];
+													 if( $ranks[$user['Acces_name_ID']-1]['Name'] == $rank['Name']){
+														echo ' selected';
+													}?>><?php echo $rank['Name'];?></option>
+										<?php } ?>
+									</select><br>
+								</td>
+								<td>
+									<input type='hidden' value=<?php echo $user['ID'];?> name='id'>
+									<button type='submit'>Change</button>
+								</td>
+								</form>
+								
+								<form methode='post' action='remove_user.php'>
+								<td>
+									<input type='hidden' value=<?php echo $user['ID'];?> name='id'>
+									<button type='submit'>Remove</button>
+								</td>
+							</form>
+						</tr>
+						<?php } ?>
+					</table>
+					<?php $next = $page + 6; $pre = $page - 6; ?>
+					<a href=<?php echo "config_page.php?submenu=Accounts&page=".$pre ; ?>>Previous</a><br>
+					<a href=<?php echo "config_page.php?submenu=Accounts&page=".$next; ?> >Next</a><br>
+					<?php 
+				} else if($_GET['submenu'] === 'Ranks'){
+				
+					$profile=$db->prepare('SELECT * FROM Ranks');
+					$profile->execute();
+					$ranks = $profile->fetchAll();
+					?>
+					<div class='banner'>
+						Ranks
+					</div>
+					<?php
+						if(isset($_SESSION['Error'])) {
+							echo $_SESSION['Error'];
+							unset($_SESSION['Error']);
+						}
+					?><br>
+					Here you can add and remove ranks.<br>
+					The ranks are based on the amount of posts a User has made<br>
+					<table border="1">
+						<tr>
+							<th>Rank name</th>
+							<th>Amount of Posts</th>
+						</tr>
+						<?php foreach($ranks as $rank){?>
+						<tr>
+							<td><?php echo $rank['Name'];?></td>
+							<td><?php echo $rank['Number_of_posts'];?></td>
+							<td>
+								<form methode="post" action="remove_rank.php">
+									<input type="hidden" name='id' value=<?php echo $rank['ID']; ?>>
+									<button type="submit"> Remove </button>
+								</form>
+							</td>
+						</tr>
+						<?php } ?>
+						<tr>
+							<form methode="post" action="add_rank.php">
+								<td> <input type="field" name="name" value="New Rank"></td>
+								<td> <input type="number" name="number_of_posts" value="Amount"></td>
+								<td> <button type="submit"> Add </button>
+							</form>
+						</tr>
+					</table>
+				<?php
+				} else if($_GET['submenu'] === 'Forums'){
+				
+					$profile=$db->prepare('SELECT Name FROM Access_Name');
+					$profile->execute();
+					$AccessNames = $profile->fetchAll();
+					
+					$profile=$db->prepare('SELECT Forum_name FROM Forums');
+					$profile->execute();
+					$ForumNames= $profile->fetchAll();
+					
+					if(isset($_SESSION['Error'])) {
+						echo $_SESSION['Error'];
+						unset($_SESSION['Error']);
+					}
+					?>
+					
+					Here you can create new forums or catagories for the forums.<br>
 					By default there will not be any catagories.<br><br>
 					<form method ="post" action="addforum.php">
 						<label for="name">Forum Name:</label><br>
-						<input name="name" /><br>
-						Select a can see rank.<br>
-						
-						<?php
-							echo $row['Name'];
-							foreach($row['Name'] as $rank['Name']) {
-							echo $rank;
-						}?>
+						<input name="name" /><br><br>
+						Permissions:<br><br>
+						Select a Permission Rank for every of the following attributes:<br> 
+						Can see:<br>
 						<select name="mydropdown">
-							<?php foreach($row as $rank) {?>
-							<option value="<?php echo $rank;?>"><?php echo $rank;?></option>
+							<?php foreach($AccessNames as $rank) {?>
+							<option value="<?php echo $rank['Name'];?>"><?php echo $rank['Name'];?></option>
 							<?php } ?>
-						</select>
+						</select><br>
+						<button type="submit"> Submit </button>
+					</form>
+					<br><div id="line">&nbsp;</div><br>
+					
+					<form method ="post" action="addcatagory.php">
+						<label for="name">Catagory Name:</label><br>
+						<input name="name" /><br><br>
+						Permissions:<br><br>
+						Select a Permission Rank for every of the following attributes:<br> 
+						Can see:<br>
+						<select name="forum_name">
+							<?php foreach($ForumNames as $name) {?>
+							<option value="<?php echo $name['Forum_name'];?>"><?php echo $name['Forum_name'];?></option>
+							<?php } ?>
+						</select><br>
 						<button type="submit"> Submit </button>
 					</form>
 					<?php
@@ -122,6 +247,8 @@ Control panel
 			}
 			?>
 	</div>
+	<br>
+	<br>
 </div>
 
 

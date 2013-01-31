@@ -1,5 +1,6 @@
 <?php
 include_once('menu.php');
+start();
 include_once('db.php');
 
 $page_title = "Forum index";
@@ -7,21 +8,22 @@ $page_title = "Forum index";
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?php echo $page_title; ?></title>
-	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
-	<link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>
 
-<div class="banner"><?php echo $page_title; ?></div>
+<?php banner($page_title); ?>
 
-<?php echo $menu_html; ?>
+<?php menu(); ?>
 
 <?php
 
-$forums_result = $db->prepare('SELECT ID, Forum_Name FROM Forums');
+// TODO: ORDER BY 'rank' instead of Forum_Name
+$forums_result = $db->prepare('SELECT ID, Forum_Name FROM Forums ORDER BY  Forums.Order ASC');
 $forums_result->execute();
 
 while ($forum = $forums_result->fetch()) {
@@ -36,17 +38,18 @@ while ($forum = $forums_result->fetch()) {
         <th width="10%">Reactions</th>
     </tr>
 <?php
-    $query = 'SELECT C.ID, C.Name, COUNT(T.ID) as Topics, COUNT(R.ID) as Replies'
+    $query = 'SELECT C.ID, C.Name,'
+           . '  (SELECT COUNT(_T.ID) FROM Threads as _T WHERE _T.Categorie_ID = C.ID) as Topics,'
+           . '  COUNT(R.ID) as Replies'
            . ' FROM Categories as C'
            . ' LEFT JOIN Threads as T ON T.Categorie_ID = C.ID'
            . ' LEFT JOIN Replys as R ON R.Thread_ID = T.ID'
            . ' WHERE C.Forum_ID = ?'
            . ' GROUP BY C.ID'
            . ' ORDER BY C.Name';
-
-	$categories_result = $db->prepare($query);
-	$categories_result->bindValue(1, $forum_id);
-	$categories_result->execute();
+    $categories_result = $db->prepare($query);
+    $categories_result->bindValue(1, $forum_id);
+    $categories_result->execute();
     $catergory_count = 0;
 
     while ($category = $categories_result->fetch()) {
