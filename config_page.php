@@ -91,13 +91,14 @@
 				if($_GET['submenu'] === 'General'){
 					echo "This is GENERAL!";
 				} else if($_GET['submenu'] === 'Accounts'){
+					
 					if(empty($_GET['page']) || $_GET['page'] < 0){
 						$page = 0;
 						$page2 = 6;
 					} else {
 						$page = $_GET['page'];
 						$page2 = $page + 5;
-					}
+				}
 					$sql = 'SELECT * FROM User ORDER BY User.ID ASC LIMIT %d,%d';
 					$sql = sprintf($sql, $page, $page2);
 					$profile=$db->prepare($sql);
@@ -146,8 +147,12 @@
 						<?php } ?>
 					</table>
 					<?php $next = $page + 6; $pre = $page - 6; ?>
-					<a href=<?php echo "config_page.php?submenu=Accounts&page=".$pre ; ?>>Previous</a><br>
-					<a href=<?php echo "config_page.php?submenu=Accounts&page=".$next; ?> >Next</a><br>
+					<div class= "submenu" Style="float:left">
+						<a href=<?php echo "config_page.php?submenu=Accounts&page=".$pre ; ?>>Previous</a>
+					</div>
+					<div class= "submenu" Style="float:right"> 
+						<a href=<?php echo "config_page.php?submenu=Accounts&page=".$next; ?> >Next</a>
+					</div>
 					<?php 
 				} else if($_GET['submenu'] === 'Ranks'){
 				
@@ -176,7 +181,7 @@
 							<td><?php echo $rank['Name'];?></td>
 							<td><?php echo $rank['Number_of_posts'];?></td>
 							<td>
-								<form methode="post" action="remove_rank.php">
+								<form method="post" action="remove_rank.php">
 									<input type="hidden" name='id' value=<?php echo $rank['ID']; ?>>
 									<button type="submit"> Remove </button>
 								</form>
@@ -184,7 +189,7 @@
 						</tr>
 						<?php } ?>
 						<tr>
-							<form methode="post" action="add_rank.php">
+							<form method="post" action="add_rank.php">
 								<td> <input type="field" name="name" value="New Rank"></td>
 								<td> <input type="number" name="number_of_posts" value="Amount"></td>
 								<td> <button type="submit"> Add </button>
