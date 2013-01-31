@@ -323,9 +323,14 @@ $category_name = $row['Name'];
             }
 
             var today=new Date();
+            var minutes = today.getMinutes();
 
-            var timepost = today.getUTCDay() + ' ' + months[today.getMonth()] + ' '
-                + today.getFullYear() + ' ' + today.getHours() + ':' + today.getMinutes();
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+
+            var timepost = today.getUTCDate() + ' ' + months[today.getMonth()] + ' '
+                + today.getFullYear() + ' ' + today.getHours() + ':' + minutes;
 
 
             // 'date("d M Y H:i", strtotime($
