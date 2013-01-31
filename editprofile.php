@@ -1,10 +1,10 @@
 <?php
 require 'menu.php';
+start();
 
 /*
  * kijk of iemand is ingelogd, anders stuur je em daar naar de inlog pagina.
  */
-session_start();
 if(!isset($_SESSION['User_ID'])){
 	header("Location: login.php");
 	$_SESSION['Error'] = "You need to log in to see this page";
@@ -30,6 +30,7 @@ $since = $row['Since'];
 $fname = $row['FirstName'];
 $lname = $row['LastName'];
 $aboutme = $row['AboutMe'];
+$job = $row['Job'];
 
 /*
  * Tellen van het aantal posts van een user.
@@ -136,21 +137,23 @@ $rank = $row3['Name'];
 
 		<div class="column">
 			<table width="80%" style="font-size:12px;">
+<!--			
 			<tr>
 				<td width="50%"><b>In-game name:</b></td>
 				<td><input type="text" name="ign" value="<?php echo $username ?>"/></td>
 			</tr>
+-->
 			<tr>
-				<td><b>Firstname:</b></td>
-				<td><input type="text" name="fname" value="<?php echo $fname ?>" /></td>
+				<td width="50%"><b>Firstname:</b></td>
+				<td><input type="text" name="fname" value="<?php echo $fname ?>"  /></td>
 			</tr>
 			<tr>
 				<td><b>Lastname:</b></td>
 				<td><input type="text" name="lname" value="<?php echo $lname ?>" /></td>
 			</tr>
 			<tr>
-				<td><b>Bought Minecraft:</b></td>
-				<td><input type="text" name="bought" value="yes" /></td>
+				<td><b>Job:</b></td>
+				<td><input type="text" name="job" value="<?php echo $job ?>" /></td>
 			</tr>
 			</table>
 		</div>
@@ -158,7 +161,8 @@ $rank = $row3['Name'];
 		<div class="infobox">
 			<b>Info about me: </b><br>
 			<textarea class="textarea" name="aboutme"><?php echo $aboutme ?></textarea>
-		</div>	
+		</div>
+		<input method="post" type="hidden" name="Username" value="<?php echo $username ?>" >
 	</form>
 	</div>
 </body>
