@@ -340,7 +340,7 @@ $category_name = $row['Name'];
                      + '<center>' + username + '<br><br>'
                      + '<img src="steve.jpg" width="40px" height="40px"><br>'
                      + '<p style="font-size:10pt;">'
-                     + 'Level 1<br>'
+                     + 'Rank: ' + rank + '<br>'
                      + 'Posts: ' + posts + '<br>'
                      + 'Joined:<br>' + time_joined
                      + '</p></center>'
@@ -402,9 +402,29 @@ $profile->bindValue(':ID', $_SESSION['User_ID']);
 $profile->execute();
 $row = $profile->fetch();
 $username = $row['Name'];
+
+/*
+ * Tellen van aantal posts van ingelogde user
+ */
+$replynmr = $db->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
+								User_ID=:ID');
+$replynmr->bindValue(':ID', $_SESSION['User_ID']);
+$replynmr->execute();
+$row = $replynmr->fetch();
+$posts = $row['COUNT(User_ID)'];
+
+/*
+ * Rank ophalen van de ingelogde user
+ */
+$ranks = $db->prepare('SELECT Name FROM Ranks WHERE ID = (SELECT MAX(ID) FROM Ranks WHERE number_of_posts < :posts)');
+$ranks->bindValue(':posts', $posts);
+$ranks->execute();
+$row3 = $ranks->fetch();
+$rank = $row3['Name'];
 ?>
     var username = "<?php echo htmlentities($username)?>";
     var thread_id = <?php echo $thread_ID;?>;
+    var rank = "<?php echo $rank; ?>";
     </script>
 	<?php } else { ?>
     <p>Login as a user to post a reply</p>
