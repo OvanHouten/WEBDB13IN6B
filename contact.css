@@ -25,12 +25,12 @@ td {
 
 .about-us {
     box-sizing:border-box;
-	background-color:#3f48cc;
-	padding:3px;
-	color:white;
-	font-weight:bold;
-	margin-top:35px;
-	padding: 10px;
+    background-color:#3f48cc;
+    padding:3px;
+    color:white;
+    font-weight:bold;
+    margin-top:35px;
+    padding: 10px;
 }
 
 .about-us a:link {color:white;}

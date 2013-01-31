@@ -1,5 +1,6 @@
 <?php
 include_once('menu.php');
+start();
 include_once('db.php');
 start();
 
@@ -24,10 +25,10 @@ $page_title = 'Topics of category "'. $category_title .'"';
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?php echo $page_title ?></title>
-	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
-	<link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>

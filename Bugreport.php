@@ -1,4 +1,13 @@
 <?php
+include_once('menu.php');
+start();
+
+if(!isset($_SESSION['User_ID'])){
+	header("Location: login.php");
+	$_SESSION['Error'] = "You need to log in to see this page";
+	exit;
+}
+
 /*
  connectie met de database maken
  */
@@ -9,12 +18,19 @@ if (!$db){
 	die('Could not connect: ' . mysql_error());
 }
 
+$posterinfo = $db->prepare('SELECT * FROM User WHERE ID = :ID');
+$posterinfo->bindValue(':ID', $_SESSION['User_ID']);
+$posterinfo->execute();
+$row = $posterinfo->fetch();
+$name = $row['Name'];
+$email = $row['Email'];
+
 /*
  * invullen van de php-variabelen voor het verzenden van een mail
  */
 $to = "olaf.ajax@hotmail.com";
-$email = $_REQUEST['email'];
-$name = $_REQUEST['name'];
+//$email = $_REQUEST['email'];
+//$name = $_REQUEST['name'];
 $subject = "Bugreport";
 $text = $_REQUEST['Bugreport'];
 $Bugreport = "From: " . $name . "\nEmail: " . $email . "\n\n" . $text;

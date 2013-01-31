@@ -1,18 +1,12 @@
 <?php 
 require 'menu.php';
 start();
-
-/* 
- * connectie met de sql database maken.
- */
-$dbusername='webdb13IN6B';
-$dbpassword='stafrana';
-$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
+include_once('db.php');
 
 /*
  * Ophalen van gegevens van de Titelpost
  */
-$thread_ID = $_REQUEST['thread_id'];
+$thread_ID = intval($_REQUEST['thread_id']);
 
 $thread=$db->prepare('SELECT * FROM Threads WHERE ID = :ID');
 $thread->bindValue(':ID', $thread_ID);
@@ -86,6 +80,10 @@ $category_name = $row['Name'];
 		font-family:sans-serif;
 		font-size:13pt;
 	}
+	.profilebar a:link {color:white;text-decoration: none;}     
+	.profilebar a:visited {color:white;text-decoration: none;} 
+	.profilebar a:hover {color:white;text-decoration: none;}  
+	,profilebar a:active {color:white;text-decoration: none;}
 	.upperbar{
 		background-color:#3F48CC;
 		padding-top:7px;
@@ -100,7 +98,7 @@ $category_name = $row['Name'];
 	.upperbar a:visited {color:white;text-decoration: none;} 
 	.upperbar a:hover {color:white;text-decoration: none;}  
 	.upperbar a:active {color:white;text-decoration: none;}
-	
+
 	.post{
 		background-color:white;
 		padding:5px;
@@ -146,7 +144,7 @@ $category_name = $row['Name'];
 <body>
 	<!-- Banner en Menubalk -->
 	<?php  
-		banner("Forum - " . $titel);
+        banner("Thread \"".htmlentities($titel)."\"")
 		menu();
 	?>
 
@@ -160,7 +158,7 @@ $category_name = $row['Name'];
 	<!-- FIRST POST THREADSTARTER -->
 	<div class="template">
 		<div class="profilebar">
-			<center><?php echo $username ?><br><br>
+			<center><a href="profile.php?username=<?php echo $username ?>"><?php echo $username ?></a><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
 				Rank: <?php echo $rank ?><br>
@@ -238,7 +236,7 @@ $category_name = $row['Name'];
 	<!-- Alle php-variabelen op hun plek in de tamplate zetten -->
 	<div class="template">
 		<div class="profilebar">
-			<center><?php echo $userpost ?><br><br>
+			<center><a href="profile.php?username=<?php echo $userpost ?>"><?php echo $userpost ?></a><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
 				Rank: <?php echo $rank ?><br>
@@ -300,7 +298,7 @@ $category_name = $row['Name'];
 	<!-- Reply-blok, kan alleen gezien worden door ingelogde gebruikers -->
 	<div class="template">
 		<div class="profilebar">
-			<center><?php echo $useruname ?><br><br>
+			<center><a href="profile.php?username=<?php echo $useruname ?>"><?php echo $useruname ?></a><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
 				Rank: <?php echo $rank ?><br>
@@ -310,7 +308,13 @@ $category_name = $row['Name'];
 			</p></center>
 			</div>
 
-		<form name="newpost" action="reply.php" method="post">
+
+        <script>
+        function checkIfLeeg(e) {
+            return document.forms["newpost"]["message"].value.replace(/^\s+|\s+$/g,'') != '';
+        }
+        </script>
+		<form name="newpost" action="reply.php" method="post" onsubmit="checkIfLeeg()">
 			<div class="upperbar" align="right">
 				<input type="hidden" value="<?php echo $thread_ID ?>" 
 					name="Thread_ID">
@@ -318,8 +322,7 @@ $category_name = $row['Name'];
 			</div>
 
 			<div class="post">
-				<textarea name="message" class="textarea" 
-					name="NewPost"></textarea>
+				<textarea name="message" class="textarea"></textarea>
 			</div>
 		</form>
 	</div>

@@ -1,9 +1,10 @@
 <?php
 include_once('menu.php');
+start();
 include_once('db.php');
 
 if (!isset($_SESSION['User_ID'])) {
-    include('login.php');
+    header('Location: login.php');
     die();
 }
 
@@ -38,16 +39,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?><!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?php echo $page_title ?></title>
-	<link rel="stylesheet" type="text/css" href="./index_files/StandaardOpmaak.css">
+    <link rel="stylesheet" type="text/css" href="./index_files/StandaardOpmaak.css">
 </head>
 
 <body>
 
-<h1 class="banner"><?php echo $page_title ?></h1>
+<?php banner($page_title); ?>
 
-<?php echo $menu_html; ?>
+<?php menu(); ?>
 
 <form class="new-thread-form" action="new_thread.php?category_id=<?php echo $category_id; ?>" method="post">
     <div class="row">

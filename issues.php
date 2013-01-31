@@ -1,6 +1,15 @@
 <?php
 require 'menu.php';
 start();
+
+/*
+ * kijk of iemand is ingelogd, anders stuur je em daar naar de inlog pagina.
+ */
+if(!isset($_SESSION['User_ID'])){
+	header("Location: login.php");
+	$_SESSION['Error'] = "You need to log in to see this page";
+	exit;
+}
 ?>
 <html>
 <head>
@@ -27,7 +36,7 @@ start();
 
 		.textarea {
 			width:100%;
-			height:140px;
+			height:260px;
 			font-family:sans-serif;
 		   	font-size:10pt;
 			resize:none;
@@ -45,10 +54,12 @@ start();
 	<!-- Formulier voor verzenden van een report -->
 	<div class="box">
 	<form action="Bugreport.php" method="post" >
+<!--		
 		<label for="name">Name:</label><br>
 		<input type="text" name="name" /><br><br>
 		<label for="email">E-mail:</label><br>
 		<input name="email" type="email" /><br><br>
+-->	
 		<div class="row">
 			<label for="Bugreport">Bug report</label><br>
 			<textarea class="textarea" name="Bugreport" placeholder="Type your bug report here, this may also include grammar and spelling mistakes."></textarea><br>

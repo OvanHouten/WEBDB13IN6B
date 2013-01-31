@@ -1,10 +1,10 @@
 <?php
 require 'menu.php';
+start();
 
 /*
  * kijk of iemand is ingelogd, anders stuur je em daar naar de inlog pagina.
  */
-session_start();
 if(!isset($_SESSION['User_ID'])){
 	header("Location: login.php");
 	$_SESSION['Error'] = "You need to log in to see this page";
@@ -18,17 +18,24 @@ $dbusername='webdb13IN6B';
 $dbpassword='stafrana';
 $dbuser = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
 
+$getID=$dbuser->prepare('SELECT ID FROM User WHERE Name = :username');
+$getID->bindValue(':username', $_REQUEST['username']);
+$getID->execute();
+$row = $getID->fetch();
+$UserID = $row['ID'];
+
 /*
  * Ophalen van de User gegevens en in php-variabelen zetten
  */
 $profile=$dbuser->prepare('SELECT * FROM User WHERE ID = :ID');
-$profile->bindValue(':ID', $_SESSION['User_ID']);
+$profile->bindValue(':ID', $UserID);
 $profile->execute();
 $row = $profile->fetch();
 $username = $row['Name'];
 $since = $row['Since'];
 $fname = $row['FirstName'];
 $lname = $row['LastName'];
+$job = $row['Job'];
 $aboutme = $row['AboutMe'];
 
 /*
@@ -36,7 +43,7 @@ $aboutme = $row['AboutMe'];
  */
 $replynmr = $dbuser->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
 								User_ID=:ID');
-$replynmr->bindValue(':ID', $_SESSION['User_ID']);
+$replynmr->bindValue(':ID', $UserID);
 $replynmr->execute();
 $row2 = $replynmr->fetch();
 $posts = $row2['COUNT(User_ID)'];
@@ -124,20 +131,24 @@ $rank = $row3['Name'];
 				<?php echo (date("d-m-Y H:i", strtotime($since))); ?>
 			</p></center>
 		</div>
-
+		
 		<div class="upperbar" align="right">
+		<?php if($_SESSION['User_ID'] == $UserID){ ?>
 			<a href="editprofile.php">Edit</a>
+		<?php } ?>
 		</div>
 
 	<!-- Let op, als de lijst langer word moeten hoogtes worden aangepast -->
 		<div class="column">
 			<table width="80%" style="font-size:12px;">
+<!--			
 			<tr>
 				<td style="padding-top:5px; padding-bottom:6px;" width="50%" ><b>In-game name:</b></td>
 				<td><?php echo $username ?></td>
 			</tr>
+-->
 			<tr>
-				<td style="padding-top:5px; padding-bottom:6px;" ><b>Firstname:</b></td>
+				<td style="padding-top:5px; padding-bottom:6px;" width="50%" ><b>Firstname:</b></td>
 				<td><?php echo $fname ?></td>
 			</tr>
 			<tr>
@@ -145,10 +156,9 @@ $rank = $row3['Name'];
 				<td><?php echo $lname ?></td>
 			</tr>
 			<tr>
-				<td style="padding-top:5px; padding-bottom:6px" ><b>Bought Minecraft:</b></td>
-				<td>Yes</td>
+				<td style="padding-top:5px; padding-bottom:6px"><b>Job:</b></td>
+				<td><?php echo $job ?></td>
 			</tr>
-			
 			</table>
 		</div>
 	

@@ -39,9 +39,10 @@ $dbpost->execute();
 /*
  * Text-veld mag niet leeg zijn
  */
-if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) 
+
+if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) 
         && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-    header("Location: thread.php?thread_id=" . $thread_id);
+    header("Location: thread.php?thread_id=" . $_REQUEST['Thread_ID']);
 }
 
 header("Location: thread.php?thread_id=" . $_REQUEST['Thread_ID']);
