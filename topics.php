@@ -2,10 +2,9 @@
 include_once('menu.php');
 start();
 include_once('db.php');
-start();
 
-if(!isset($_SESSION['User_ID'])){
-	$_SESSION['Acces_ID'] = 2;
+if(!isset($_SESSION['User_ID'])) {
+    $_SESSION['Acces_ID'] = 2;
 }
 
 $category_id = intval($_REQUEST['category_id']);
@@ -21,8 +20,7 @@ $category_title = $tmp['Name'];
 
 $page_title = 'Topics of category "'. $category_title .'"';
 
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -33,9 +31,9 @@ $page_title = 'Topics of category "'. $category_title .'"';
 
 <body>
 
-<?php 
+<?php
 banner($page_title);
-menu(); 
+menu();
 ?>
 
 <table class="topic-table">
@@ -45,7 +43,7 @@ menu();
         <th width="20%">Author</th>
         <th width="*%">Last posted</th>
         <?php if($_SESSION['Acces_ID'] <= 1) {?>
-        	<th width="4%"></th>
+            <th width="4%"></th>
         <?php } ?>
     </tr>
 <?php
@@ -79,10 +77,10 @@ menu();
         <td><em>No replies</em></td>
 <?php
     }
-?>		
-    	<?php if($_SESSION['Acces_ID'] <= 1) {?>
-		<td align="center"><center>X</center></td>
-		<?php } ?>
+?>
+        <?php if($_SESSION['Acces_ID'] <= 1) { ?>
+        <td align="center"><center>X</center></td>
+        <?php } ?>
     </tr>
 <?php
     }
