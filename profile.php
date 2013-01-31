@@ -1,19 +1,26 @@
 <?php
 require 'menu.php';
 
+/*
+ * kijk of iemand is ingelogd, anders stuur je em daar naar de inlog pagina.
+ */
 session_start();
 if(!isset($_SESSION['User_ID'])){
-	header("Location: http://webdb.science.uva.nl/webdb13IN6B/login.php");
+	header("Location: login.php");
 	$_SESSION['Error'] = "You need to log in to see this page";
 	exit;
 }
 
+/* 
+ * connectie met de sql database maken.
+ */
 $dbusername='webdb13IN6B';
 $dbpassword='stafrana';
 $dbuser = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
 
-$username = "niet opgehaald";
-
+/*
+ * Ophalen van de User gegevens en in php-variabelen zetten
+ */
 $profile=$dbuser->prepare('SELECT * FROM User WHERE ID = :ID');
 $profile->bindValue(':ID', $_SESSION['User_ID']);
 $profile->execute();
@@ -24,12 +31,24 @@ $fname = $row['FirstName'];
 $lname = $row['LastName'];
 $aboutme = $row['AboutMe'];
 
+/*
+ * Tellen van het aantal posts van een user.
+ */
 $replynmr = $dbuser->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
 								User_ID=:ID');
 $replynmr->bindValue(':ID', $_SESSION['User_ID']);
 $replynmr->execute();
 $row2 = $replynmr->fetch();
-$posts = $row2['COUNT(User_ID)']
+$posts = $row2['COUNT(User_ID)'];
+
+/*
+ * Ophalen van de bijpassende ranks(kijkt naar het aantal posts)
+ */
+$ranks = $dbuser->prepare('SELECT Name FROM Ranks WHERE ID = (SELECT MAX(ID) FROM Ranks WHERE number_of_posts < :posts)');
+$ranks->bindValue(':posts', $posts);
+$ranks->execute();
+$row3 = $ranks->fetch();
+$rank = $row3['Name'];
 ?>
 
 <html>
@@ -86,20 +105,23 @@ $posts = $row2['COUNT(User_ID)']
 </head>
 
 <body>
+	<!-- Banner en Menubalk -->
 	<?php  
 		banner("Profile");
 		menu();
 	?>
 	
+	<!-- Profile-blok, alle variabelen zijn al geladen en worden alleen 
+	opgeroepen -->
 	<div style="box-shadow: 0px 5px 20px #888888;">
 		<div class="profilebar">
 			<center><?php echo $username ?><br><br>
 			<img src="steve.jpg" width="40px" height="40px"><br>
 			<p style="font-size:10pt;">
-				Level 1<br>
+				Rank: <?php echo $rank ?><br>
 				Posts: <?php echo $posts ?><br>
 				Joined:<br>
-				<?php echo (date("d-m-Y h:m", strtotime($since))); ?>
+				<?php echo (date("d-m-Y H:i", strtotime($since))); ?>
 			</p></center>
 		</div>
 
@@ -107,8 +129,7 @@ $posts = $row2['COUNT(User_ID)']
 			<a href="editprofile.php">Edit</a>
 		</div>
 
-		<!--Let op, als de lijst langer word, moeten de hoogtes worden aangepast!!!-->
-		
+	<!-- Let op, als de lijst langer word moeten hoogtes worden aangepast -->
 		<div class="column">
 			<table width="80%" style="font-size:12px;">
 			<tr>

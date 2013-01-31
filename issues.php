@@ -1,14 +1,6 @@
 <?php
 require 'menu.php';
-
-session_start();
-if(!isset($_SESSION['User_ID'])){
-	$user = 'Guest';
-	$login = 'Log in';
-} else {
-	$login = 'Log out';
-	$user = $_SESSION['User'];
-}
+start();
 ?>
 <html>
 <head>
@@ -44,11 +36,13 @@ if(!isset($_SESSION['User_ID'])){
 </head>
 
 <body>
+	<!-- Banner en Menubalk -->
 	<?php  
 		banner("Profile");
 		menu();
 	?>
-
+	
+	<!-- Formulier voor verzenden van een report -->
 	<div class="box">
 	<form action="Bugreport.php" method="post" >
 		<label for="name">Name:</label><br>
@@ -58,12 +52,7 @@ if(!isset($_SESSION['User_ID'])){
 		<div class="row">
 			<label for="Bugreport">Bug report</label><br>
 			<textarea class="textarea" name="Bugreport" placeholder="Type your bug report here, this may also include grammar and spelling mistakes."></textarea><br>
-		<input type="submit" style="float:right;">
-		<!--
-		<div align="right" style="overflow: hidden;margin-right:7px;">
-			<h3><a type="submit" href="Bugreport.php">Send</a></h3>
-		</div>
-		-->
+		<input type="submit" value="Send" style="float:right;">
 		</div>
 	</form>
 	</div>
