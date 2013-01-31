@@ -57,10 +57,6 @@
 				E-mail addres:<br>
 				<input name="email" size="35"/><br>
 				<br>
-				Gender:<br>
-				<input name="gender" type="radio" value="male" />Male<br>
-				<input name="gender" type="radio" value="female" />Female<br>
-				<br>
 				<button type="submit"> Submit </button>
 			</form>
 	</div>
