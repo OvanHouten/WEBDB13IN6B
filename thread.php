@@ -144,7 +144,7 @@ $category_name = $row['Name'];
 <body>
 	<!-- Banner en Menubalk -->
 	<?php  
-        banner("Thread \"".htmlentities($titel)."\"")
+		banner("Forum - " . htmlentities($titel));
 		menu();
 	?>
 
@@ -295,6 +295,9 @@ $category_name = $row['Name'];
 		$row3 = $ranks->fetch();
 		$rank = $row3['Name'];
 	?>
+
+    <div id="ajax-replies"></div>
+
 	<!-- Reply-blok, kan alleen gezien worden door ingelogde gebruikers -->
 	<div class="template">
 		<div class="profilebar">
@@ -306,18 +309,77 @@ $category_name = $row['Name'];
 				Joined:<br>
 				<?php echo (date("d M Y H:i", strtotime($usersince))); ?>
 			</p></center>
-			</div>
-
+        </div>
 
         <script>
-        function checkIfLeeg(e) {
-            return document.forms["newpost"]["message"].value.replace(/^\s+|\s+$/g,'') != '';
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 
+                      'Sep', 'Oct', 'Nov', 'Dec'];
+        function createReply(msg) {
+            if (document.querySelectorAll) {
+                var post_elems = document.querySelectorAll('.template .post');
+                var post_nr = post_elems.length - 1;
+            } else {
+                var post_nr = 1;
+            }
+
+            var today=new Date();
+
+            var timepost = today.getUTCDay() + ' ' + months[today.getMonth()] + ' '
+                + today.getFullYear() + ' ' + today.getHours() + ':' + today.getMinutes();
+
+
+            // 'date("d M Y H:i", strtotime($
+
+            var html = '<div class="template">'
+                     + '<div class="profilebar">'
+                     + '<center>' + username + '<br><br>'
+                     + '<img src="steve.jpg" width="40px" height="40px"><br>'
+                     + '<p style="font-size:10pt;">'
+                     + 'Level 1<br>'
+                     + 'Posts: ' + posts + '<br>'
+                     + 'Joined:<br>' + time_joined
+                     + '</p></center>'
+                     + '</div>'
+
+                     + '<div class="upperbar" align="right">' + '#' + post_nr + '</div>'
+
+                     + '<div class="post">' + msg + '</div>'
+
+                     + '<div class="timeofpost" align="right">' + timepost + '</div>'
+                     + '</div>';
+            var elem = document.getElementById('ajax-replies');
+            elem.innerHTML += html;
+        }
+
+        function submitReply(msg) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "reply.php?thread_id=" + thread_id, true);
+            xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xhr.send('message=' + msg);
+        }
+
+        function checkIfLeeg() {
+            try {
+            var msg = document.forms["newpost"]["message"].value.replace(/^\s+|\s+$/g,'');
+
+            if (msg) {
+                createReply(msg);
+                submitReply(msg);
+
+                document.forms["newpost"]["message"].value = '';
+            }
+            } catch(e) {
+                if (console && console.log)
+                    console.log(e);
+            }
+
+            return false;
         }
         </script>
-		<form name="newpost" action="reply.php" method="post" onsubmit="checkIfLeeg()">
+
+        <form name="newpost" action="reply.php" method="post" onsubmit="return checkIfLeeg()">
 			<div class="upperbar" align="right">
-				<input type="hidden" value="<?php echo $thread_ID ?>" 
-					name="Thread_ID">
+				<input name="thread_id" type="hidden" value="<?php echo $thread_ID;?>">
 				<input type="submit" value="Reply">
 			</div>
 
@@ -326,7 +388,21 @@ $category_name = $row['Name'];
 			</div>
 		</form>
 	</div>
+    <script>
+    var time_joined = '<?php echo (date("d M Y H:i", strtotime($usersince))); ?>';
+    var posts = <?php echo $posts?>;
+<?php
+$profile=$db->prepare('SELECT * FROM User WHERE ID = :ID');
+$profile->bindValue(':ID', $_SESSION['User_ID']);
+$profile->execute();
+$row = $profile->fetch();
+$username = $row['Name'];
+?>
+    var username = "<?php echo htmlentities($username)?>";
+    var thread_id = <?php echo $thread_ID;?>;
+    </script>
+	<?php } else { ?>
+    <p>Login as a user to post a reply</p>
 	<?php } ?>
-	
 </body>
 </html>
