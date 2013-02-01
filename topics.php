@@ -3,7 +3,11 @@ include_once('menu.php');
 start();
 include_once('db.php');
 
-$category_id = intval($_REQUEST['category_id']);
+if(!isset($_SESSION['Acces_ID'])) {
+	$_SESSION['Acces_ID'] = 4;
+}
+
+$category_id = intval($_GET['category_id']);
 
 $query = 'SELECT Name FROM Categories WHERE ID = ?';
 
@@ -36,7 +40,10 @@ $page_title = 'Topics of category "'. $category_title .'"';
     <tr>
         <th width="50%">Topic name</th>
         <th width="20%">Author</th>
-        <th width="30%">Last posted</th>
+        <th width="*%">Last posted</th>
+        <?php if($_SESSION['Acces_ID'] == 1) { ?>
+        <th width="20px"></th>
+        <?php } ?>
     </tr>
 <?php
     $query = 'SELECT T.Hidden, T.ID, T.Title, U.Name, MAX(R.Time) as last_posted'
@@ -45,7 +52,7 @@ $page_title = 'Topics of category "'. $category_title .'"';
            . ' LEFT JOIN Replys as R ON R.Thread_ID = T.ID'
            . ' WHERE T.Categorie_ID = ?'
            . ' GROUP BY T.ID'
-           . ' ORDER BY T.ID, T.Title';
+           . ' ORDER BY MAX(R.Time) DESC';
 
     $threads_results = $db->prepare($query);
     $threads_results->bindValue(1, $category_id);
@@ -66,10 +73,33 @@ $page_title = 'Topics of category "'. $category_title .'"';
     if (!empty($thread['last_posted'])) {
 ?>
         <td><?php echo $thread['last_posted'] ?></td>
+        
+        <?php if($_SESSION['Acces_ID'] <= 2) { ?>
+        	<td>	
+        		<form method='post' action='remove_thread.php'>
+        		<center>
+        		<input type='hidden' name='category_id' value=<?php echo $category_id; ?>>
+        		<input type='hidden' name='thread_id' value=<?php echo $thread['ID']; ?>>
+        		<button type='submit'>X</button>
+        		</form>
+        		</center></td>
+        <?php } ?>
 <?php
     } else {
 ?>
         <td><em>No replies</em></td>
+        
+        <?php if($_SESSION['Acces_ID'] == 1) { ?>
+        	<td>
+        		<form method='post' action='remove_thread.php'>
+        		<center>
+        		<input type='hidden' name='category_id' value=<?php echo $category_id; ?>>
+        		<input type='hidden' name='thread_id' value=<?php echo $thread['ID']; ?>>
+        		<button type='submit'>X</button>
+        		</form>
+        		</center>
+        	</td>
+        <?php } ?>
 <?php
     }
 ?>
