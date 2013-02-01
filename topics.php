@@ -1,11 +1,7 @@
 <?php
 include_once('menu.php');
-include_once('db.php');
 start();
-
-if(!isset($_SESSION['User_ID'])){
-	$_SESSION['Acces_ID'] = 2;
-}
+include_once('db.php');
 
 $category_id = intval($_REQUEST['category_id']);
 
@@ -20,35 +16,30 @@ $category_title = $tmp['Name'];
 
 $page_title = 'Topics of category "'. $category_title .'"';
 
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?php echo $page_title ?></title>
-	<link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
-	<link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" type="text/css" href="StandaardOpmaak.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>
 
-<?php 
-banner($page_title);
-menu(); 
-?>
+<?php banner($page_title); ?>
+
+<?php menu(); ?>
 
 <table class="topic-table">
 <tbody>
     <tr>
         <th width="50%">Topic name</th>
         <th width="20%">Author</th>
-        <th width="*%">Last posted</th>
-        <?php if($_SESSION['Acces_ID'] <= 1) {?>
-        	<th width="4%"></th>
-        <?php } ?>
+        <th width="30%">Last posted</th>
     </tr>
 <?php
-    $query = 'SELECT T.ID, T.Title, U.Name, MAX(R.Time) as last_posted'
+    $query = 'SELECT T.Hidden, T.ID, T.Title, U.Name, MAX(R.Time) as last_posted'
            . ' FROM Threads as T'
            . ' LEFT JOIN User as U ON U.ID = T.User_ID'
            . ' LEFT JOIN Replys as R ON R.Thread_ID = T.ID'
@@ -64,12 +55,15 @@ menu();
 
     while ($thread = $threads_results->fetch()) {
         $thread_count++;
+        if($thread['Hidden'] == 1) { 
+        	continue;
+        }
 ?>
     <tr>
         <td><a href="thread.php?thread_id=<?php echo $thread['ID'] ?>"><?php echo $thread['Title'] ?></a></td>
         <td><?php echo $thread['Name'] ?></td>
 <?php
-    if ($thread['last_posted']) {
+    if (!empty($thread['last_posted'])) {
 ?>
         <td><?php echo $thread['last_posted'] ?></td>
 <?php
@@ -78,14 +72,10 @@ menu();
         <td><em>No replies</em></td>
 <?php
     }
-?>		
-    	<?php if($_SESSION['Acces_ID'] <= 1) {?>
-		<td align="center"><center>X</center></td>
-		<?php } ?>
+?>
     </tr>
 <?php
-    }
-
+	}
     if (!$thread_count) {
 ?>
     <tr>

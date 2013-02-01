@@ -1,18 +1,12 @@
 <?php 
 require 'menu.php';
 start();
-
-/* 
- * connectie met de sql database maken.
- */
-$dbusername='webdb13IN6B';
-$dbpassword='stafrana';
-$db = new PDO("mysql:host=localhost;dbname=webdb13IN6B;charset=UTF-8", $dbusername, $dbpassword);
+include_once('db.php'); 
 
 /*
  * Ophalen van gegevens van de Titelpost
  */
-$thread_ID = $_REQUEST['thread_id'];
+$thread_ID = intval($_REQUEST['thread_id']);
 
 $thread=$db->prepare('SELECT * FROM Threads WHERE ID = :ID');
 $thread->bindValue(':ID', $thread_ID);
@@ -150,15 +144,15 @@ $category_name = $row['Name'];
 <body>
 	<!-- Banner en Menubalk -->
 	<?php  
-		banner("Forum - " . $titel);
+		banner("Forum - " . htmlentities($titel));
 		menu();
 	?>
 
 	<!-- afgelopen path van the forumboom -->
 	<div class="path">
 		<a href="index.php">Forum</a> &gt;
-        <a href="topics.php?category_id=<?php echo $category_id ?>"><?php echo $category_name ?></a> &gt;
-        <?php echo $titel ?>
+        <a href="topics.php?category_id=<?php echo $category_id ?>"><?php echo htmlentities($category_name); ?></a> &gt;
+        <?php echo htmlentities($titel); ?>
 	</div>
 
 	<!-- FIRST POST THREADSTARTER -->
@@ -301,6 +295,9 @@ $category_name = $row['Name'];
 		$row3 = $ranks->fetch();
 		$rank = $row3['Name'];
 	?>
+
+    <div id="ajax-replies"></div>
+
 	<!-- Reply-blok, kan alleen gezien worden door ingelogde gebruikers -->
 	<div class="template">
 		<div class="profilebar">
@@ -312,7 +309,7 @@ $category_name = $row['Name'];
 				Joined:<br>
 				<?php echo (date("d M Y H:i", strtotime($usersince))); ?>
 			</p></center>
-			</div>
+        </div>
 
 <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
         <script>
@@ -339,7 +336,7 @@ $category_name = $row['Name'];
                      + '<center>' + username + '<br><br>'
                      + '<img src="steve.jpg" width="40px" height="40px"><br>'
                      + '<p style="font-size:10pt;">'
-                     + 'Level 1<br>'
+                     + 'Rank:' + rank + '<br>'
                      + 'Posts: ' + posts + '<br>'
                      + 'Joined:<br>' + time_joined
                      + '</p></center>'
@@ -384,8 +381,7 @@ $category_name = $row['Name'];
 
 <!---->		<form name="newpost" action="reply.php" method="post" onsubmit="return checkIfLeeg()">
 			<div class="upperbar" align="right">
-				<input type="hidden" value="<?php echo $thread_ID ?>" 
-					name="Thread_ID">
+				<input name="thread_id" type="hidden" value="<?php echo $thread_ID;?>">
 				<input type="submit" value="Reply">
 			</div>
 
@@ -394,7 +390,8 @@ $category_name = $row['Name'];
 			</div>
 		</form>
 	</div>
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
     <script>
     var time_joined = '<?php echo (date("d M Y H:i", strtotime($usersince))); ?>';
     var posts = <?php echo $posts?>;
@@ -404,14 +401,35 @@ $profile->bindValue(':ID', $_SESSION['User_ID']);
 $profile->execute();
 $row = $profile->fetch();
 $username = $row['Name'];
+
+
+/*
+ * Tellen van aantal posts van ingelogde user
+ */
+$replynmr = $db->prepare('SELECT COUNT(User_ID) FROM Replys WHERE
+								User_ID=:ID');
+$replynmr->bindValue(':ID', $_SESSION['User_ID']);
+$replynmr->execute();
+$row = $replynmr->fetch();
+$posts = $row['COUNT(User_ID)'];
+
+/*
+ * Rank ophalen van de ingelogde user
+ */
+$ranks = $db->prepare('SELECT Name FROM Ranks WHERE ID = (SELECT MAX(ID) FROM Ranks WHERE number_of_posts < :posts)');
+$ranks->bindValue(':posts', $posts);
+$ranks->execute();
+$row3 = $ranks->fetch();
+$rank = $row3['Name'];
 ?>
     var username = "<?php echo htmlentities($username)?>";
     var thread_id = <?php echo $thread_ID;?>;
+	var rank = "<?php echo $rank; ?>";
     </script>
 	<?php } else { ?>
     <p>Login as a user to post a reply</p>
-<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	<?php } ?>
-	
+<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
 </body>
 </html>

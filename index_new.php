@@ -23,14 +23,11 @@ $page_title = "Forum index";
 <?php
 
 // TODO: ORDER BY 'rank' instead of Forum_Name
-$forums_result = $db->prepare('SELECT ID, Forum_Name, Hidden FROM Forums ORDER BY  Forums.Order ASC');
+$forums_result = $db->prepare('SELECT ID, Forum_Name FROM Forums ORDER BY Forum_Name');
 $forums_result->execute();
 
 while ($forum = $forums_result->fetch()) {
     $forum_id = $forum['ID'];
-    if($forum['Hidden'] == 1) {
-    	continue;
-    }
 ?>
 <table class="subject-table">
 <tbody>
@@ -41,7 +38,7 @@ while ($forum = $forums_result->fetch()) {
         <th width="10%">Reactions</th>
     </tr>
 <?php
-    $query = 'SELECT C.ID, C.Name, C.Hidden, '
+    $query = 'SELECT C.ID, C.Name,'
            . '  (SELECT COUNT(_T.ID) FROM Threads as _T WHERE _T.Categorie_ID = C.ID) as Topics,'
            . '  COUNT(R.ID) as Replies'
            . ' FROM Categories as C'
@@ -56,9 +53,6 @@ while ($forum = $forums_result->fetch()) {
     $catergory_count = 0;
 
     while ($category = $categories_result->fetch()) {
-    	if($category['Hidden'] == 1) {
-    		continue;
-    	}
         $catergory_count++;
 
         $query = 'SELECT T.ID, T.Title FROM Threads as T'

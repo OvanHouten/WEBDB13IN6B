@@ -27,3 +27,6 @@ body{
 .menu a:hover {color:white;text-decoration: none;}  
 .menu a:active {color:white;text-decoration: none;}
 
+.post {
+    word-wrap: break-word;
+}
