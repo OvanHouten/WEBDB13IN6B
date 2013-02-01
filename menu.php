@@ -5,6 +5,7 @@ function start(){
 	if(!isset($_SESSION['User_ID'])){
 		$_SESSION['user'] = 'Guest';
 		$_SESSION['login'] = 'Log in';
+		$_SESSION['Acces_ID'] = 4;
 	} else {
 		$_SESSION['login'] = 'Log out';
 	}
@@ -15,7 +16,7 @@ function menu()
 ?>
 <div class="menu">
 	<a href = "index.php"> Forum </a> |
-	<a href = "profile.php?username<?php echo $_SESSION['user'] ?>"> Profile </a> |
+	<a href = "profile.php?username=<?php echo $_SESSION['user'] ?>"> Profile </a> |
 	<a href = "login.php"> <?php echo $_SESSION['login']; ?> </a> | <?php if(isset($_SESSION['Acces_ID'])) { if($_SESSION['Acces_ID'] == 1){ ?>
 	<a href = "config_page.php"> Admin Panel </a> | <?php } } ?>
 	<?php if(isset($_SESSION['Acces_ID'])) { if($_SESSION['Acces_ID'] == 1){ ?>

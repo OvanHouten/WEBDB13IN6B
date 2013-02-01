@@ -276,6 +276,7 @@
 								<form method='post' action='remove_catagory.php'>
 								<input type='hidden' name='catagory_id' value=<?php echo $catagorie['ID'];?>>
 								<button>remove</button>
+								</form>
 								</td>
 						<tr>
 						<?php } } ?>

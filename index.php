@@ -23,12 +23,12 @@ $page_title = "Forum index";
 <?php
 
 // TODO: ORDER BY 'rank' instead of Forum_Name
-$forums_result = $db->prepare('SELECT ID, Forum_Name, Hidden FROM Forums ORDER BY  Forums.Order ASC');
+$forums_result = $db->prepare('SELECT ID, Forum_Name, Hidden, Permission_Level FROM Forums ORDER BY  Forums.Order ASC');
 $forums_result->execute();
 
 while ($forum = $forums_result->fetch()) {
     $forum_id = $forum['ID'];
-    if($forum['Hidden'] == 1) {
+    if($forum['Hidden'] == 1 || $forum['Permission_Level'] < $_SESSION['Acces_ID']) {
     	continue;
     }
 ?>
@@ -41,7 +41,7 @@ while ($forum = $forums_result->fetch()) {
         <th width="10%">Reactions</th>
     </tr>
 <?php
-    $query = 'SELECT C.ID, C.Name, C.Hidden, '
+    $query = 'SELECT C.ID, C.Name, C.Hidden, C.Permission_Level, '
            . '  (SELECT COUNT(_T.ID) FROM Threads as _T WHERE _T.Categorie_ID = C.ID) as Topics,'
            . '  COUNT(R.ID) as Replies'
            . ' FROM Categories as C'
@@ -56,7 +56,7 @@ while ($forum = $forums_result->fetch()) {
     $catergory_count = 0;
 
     while ($category = $categories_result->fetch()) {
-    	if($category['Hidden'] == 1) {
+    	if($category['Hidden'] == 1 || $category['Permission_Level'] < $_SESSION['Acces_ID']) {
     		continue;
     	}
         $catergory_count++;
