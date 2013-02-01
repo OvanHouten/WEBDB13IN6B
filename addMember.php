@@ -47,7 +47,7 @@ if($row > 0){
 $profile=$db->prepare('INSERT INTO User (Name, Password, Email)
     VALUES (?,?,?)');
 $profile->bindValue(1, $_POST['name']);
-$profile->bindValue(2, $_POST['password']);
+$profile->bindValue(2, sha1($_POST['password']));
 $profile->bindValue(3, $_POST['email']);
 $profile->execute();
 header( 'Location: login.php' ) ;

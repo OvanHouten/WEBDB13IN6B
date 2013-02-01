@@ -9,8 +9,8 @@ $profile->bindValue(':Name', $_POST['name']);
 $profile->execute();
 $row = $profile->fetch();
 $password = $row['Password'];
-echo $row['Password']. ' ' . $password . ' ' . $_POST['password'];
-if($password === $_POST['password']){
+//echo $row['Password']. ' ' . $password . ' ' . $_POST['password'];
+if($password === sha1($_POST['password'])){
 	$_SESSION['User_ID'] = $row['ID'];
 	$_SESSION['user'] = $row['Name'];
 	$_SESSION['Acces_ID'] = $row['Acces_name_ID'];
