@@ -18,6 +18,8 @@ function menu()
 	<a href = "profile.php?username<?php echo $_SESSION['user'] ?>"> Profile </a> |
 	<a href = "login.php"> <?php echo $_SESSION['login']; ?> </a> | <?php if(isset($_SESSION['Acces_ID'])) { if($_SESSION['Acces_ID'] == 1){ ?>
 	<a href = "config_page.php"> Admin Panel </a> | <?php } } ?>
+	<?php if(isset($_SESSION['Acces_ID'])) { if($_SESSION['Acces_ID'] == 1){ ?>
+	<a href = "buglist.php"> Bug List </a> | <?php } } ?>
 	<a href = "issues.php"> Issues </a> |
 	<a href = "contact.php"> Contact </a>
 </div>
